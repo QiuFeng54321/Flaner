@@ -3,7 +3,8 @@
 
 #include <string>
 #include <iostream>
-#include <filesystem>
+#include <fstream>
+//#include <filesystem>
 
 namespace flaner
 {
@@ -26,16 +27,23 @@ namespace io
 	class Source
 	{
 	public:
-		Source(std::string path)
+		Source(std::string path, Encoding encoding = Encoding::UTF_8)
 			: path(path),
-			encoding(Encoding::UTF_8),
+			encoding(encoding),
 			openMode(OpenMode::OpenExisting)
-		{}
-		~Source() {}
+		{
+			object.open(path, std::ios::in | std::ios::binary);
+		}
+		~Source()
+		{
+			object.close();
+		}
 	public:
-		std::filesystem::path path;
+		/*std::filesystem::path*/std::string path;
 		Encoding encoding;
 		OpenMode openMode;
+
+		std::basic_fstream<wchar_t> object;
 	};
 }
 }

@@ -1,7 +1,7 @@
 #ifndef _FLANER_LEXER_LEXER_HH_
 #define _FLANER_LEXER_LEXER_HH_
 
-#include <lexer/io.hh>
+#include <lexer/context.hh>
 
 namespace flaner
 {
@@ -10,11 +10,13 @@ namespace lexer
 	class Lexer
 	{
 	public:
-
+		Lexer() {}
+		~Lexer() {}
 
 	public:
 		enum class TokenType
 		{
+			UNKNOWN,
 			NUMBER,
 			OP_ADD,
 			OP_MINUS,
