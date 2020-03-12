@@ -21,6 +21,8 @@ namespace lexer
 	public:
 		wchar_t getNextChar();
 		wchar_t lookNextChar();
+		wchar_t getLastChar();
+		wchar_t lookLastChar();
 		bool isEnd();
 
 	public:

@@ -1,4 +1,5 @@
-#include "lexer.hh"
+#include <lexer/lexer.hh>
+#include <lexer/utility.hh>
 
 namespace flaner
 {
@@ -16,6 +17,12 @@ namespace lexer
 		while (!context.isEnd())
 		{
 			wchar_t ch = next();
+
+			while (util::isBlank(ch))
+			{
+				ch = next();
+			}
+
 			auto match = [&](wchar_t s) {
 				return ch == s;
 			};
@@ -23,7 +30,18 @@ namespace lexer
 				return context.lookNextChar() == s;
 			};
 
-			if (match('+'))
+			if (iswdigit(ch))
+			{
+				std::wstring s;
+				while (iswdigit(ch))
+				{
+					s += ch;
+					ch = next();
+				}
+				push(TokenType::NUMBER, s);
+				//ch = context.getLastChar();
+			}			
+			else if (match('+'))
 			{
 				push(TokenType::OP_ADD, L"+");
 			}
@@ -67,9 +85,25 @@ namespace lexer
 					push(TokenType::OP_MOD, L"%");
 				}
 			}
+			else if (match('('))
+			{
+				push(TokenType::OP_PAREN_BEGIN, L"(");
+			}
+			else if (match(')'))
+			{
+				std::cout << "-------\n" << std::endl;
+				push(TokenType::OP_PAREN_END, L")");
+			}
 			else
 			{
-				push(TokenType::UNKNOWN, std::wstring{ ch });
+				if (ch == WEOF)
+				{
+					push(TokenType::END_OF_FILE, { ch });
+				}
+				else
+				{
+					push(TokenType::UNKNOWN, { ch });
+				}
 			}
 		}
 		return sequence;

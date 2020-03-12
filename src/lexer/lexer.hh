@@ -22,10 +22,13 @@ namespace lexer
 		Context context;
 
 	public:
-		enum class TokenType
+		enum class TokenType : uint16_t
 		{
 			UNKNOWN,
+			END_OF_FILE,
+
 			NUMBER,
+
 			OP_ADD,
 			OP_MINUS,
 			OP_MUL,
@@ -34,6 +37,13 @@ namespace lexer
 			OP_MOD,
 			OP_QUOTE,
 			OP_POW,
+
+			OP_PAREN_BEGIN,
+			OP_PAREN_END,
+			OP_BRACKET_BEGIN,
+			OP_BRACKET_END,
+			OP_BRACE_BEGIN,
+			OP_BRACE_END,
 		};
 
 		struct Token

@@ -5,11 +5,13 @@ int main(int argc, char* argv[])
 	using namespace flaner::lexer;
 	setlocale(LC_ALL, "chs");
 	std::cout << "\nFlaner Programming Language.\n--------\n\n";
-	Context context(R"(D:\hello.fln)");
-	while (!context.isEnd())
+	
+	Lexer lexer(R"(D:\hello.fln)");
+	auto tokens = lexer.process();
+
+	for (auto i : tokens)
 	{
-		std::wstring ch{ context.getNextChar() };
-		std::wcout << ch;
+		std::wcout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
 	}
 
 	std::cout << "\n\n";
