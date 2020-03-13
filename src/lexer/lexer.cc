@@ -171,19 +171,68 @@ namespace lexer
                     }
                 }
             }
+			else if (match('<'))
+			{
+				if (test('<'))
+				{
+					push(TokenType::OP_SHIFT_LEFT, L"<<");
+					next();
+				}
+				else
+				{
+					if (test('='))
+					{
+						push(TokenType::OP_LESS_EQUAL, L"<=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_LESS_THAN, L"<");
+					}
+				}
+			}
+			else if (match('>'))
+			{
+				if (test('>'))
+				{
+					push(TokenType::OP_SHIFT_RIGHT, L">>");
+					next();
+				}
+				else
+				{
+					if (test('='))
+					{
+						push(TokenType::OP_GREATER_EQUAL, L">=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_GREATER_THAN, L">");
+					}
+				}
+			}
 			else if (match('='))
 			{
+				bool pureAssignment = true;
 				auto replace = [&](TokenType t1, TokenType t2, std::wstring s) {
 					if (sequence.back().type == t1)
 					{
 						sequence.pop_back();
 						push(t2, s);
+						pureAssignment = false;
 					}
 				};
 
 				replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, L"**=");
 				replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, L"%%=");
 				replace(TokenType::OP_INTDIV, TokenType::OP_INTDIV_ASSIGN, L"//=");
+				replace(TokenType::OP_SHIFT_LEFT, TokenType::OP_SHIFT_LEFT_ASSIGN, L"<<=");
+				replace(TokenType::OP_SHIFT_RIGHT, TokenType::OP_SHIFT_RIGHT_ASSIGN, L">>=");
+
+				if (pureAssignment)
+				{
+					push(TokenType::OP_ASSIGN, L"=");
+				}
 
 			}
             else if (match('('))
