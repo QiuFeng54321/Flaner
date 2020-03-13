@@ -120,6 +120,13 @@ namespace lexer
 		
 	public:
 		std::vector<Token> process();
+
+		struct LexError
+		{
+			std::wstring info;
+			size_t line, offset;
+		};
+		void error(std::wstring info);
 	};
 }
 }

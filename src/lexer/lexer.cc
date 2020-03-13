@@ -13,14 +13,17 @@ namespace lexer
 		auto next = [&](size_t offset = 1) {
 			return context.getNextChar(offset);
 		};
+		auto lastToken = [&]() {
+			return sequence.at(sequence.size() - 1);
+		};
 
 		while (!context.isEnd())
 		{
 			wchar_t ch = next();
 
-			while (util::isBlank(ch))
+			if (util::isBlank(ch))
 			{
-				ch = next();
+				continue;
 			}
 
 			auto match = [&](wchar_t s) {
@@ -70,12 +73,12 @@ namespace lexer
 				{
 					if (test('=', 2))
 					{
-						push(TokenType::OP_POW_ASSIGN, L"**=");
+						push(TokenType::OP_QUOTE_ASSIGN, L"**=");
 						next();
 					}
 					else
 					{
-						push(TokenType::OP_POW, L"**");
+						push(TokenType::OP_QUOTE, L"**");
 					}
 					next();
 				}
@@ -83,13 +86,15 @@ namespace lexer
 				{
 					if (test('='))
 					{
-						push(TokenType::OP_MUL_ASSIGN, L"*=");
+
+						push(TokenType::OP_MOD_ASSIGN, L"*=");
 						next();
 					}
 					else
 					{
-						push(TokenType::OP_MUL, L"*");
+						push(TokenType::OP_MOD, L"*");
 					}
+					next();
 				}
 			}
 			else if (match('/'))
@@ -122,7 +127,7 @@ namespace lexer
 			}
 			else if (match('%'))
 			{
-				if (test('%'))
+				if (test('%', 2))
 				{
 					if (test('='))
 					{
@@ -228,6 +233,10 @@ namespace lexer
 			}
 		}
 		return sequence;
+	}
+	void Lexer::error(std::wstring info)
+	{
+		throw LexError{ L"SyntaxError: " + info, context.lineOffset, context.charOffset };
 	}
 }
 }

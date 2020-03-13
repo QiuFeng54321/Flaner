@@ -29,7 +29,7 @@ namespace flaner
 			{
 				source.object.seekp((offset - 1) * sizeof(wchar_t), std::ios::cur);
 				wchar_t ch = source.object.get();
-				source.object.seekp(-offset * sizeof(wchar_t), std::ios::cur);
+				source.object.seekp(-static_cast<int>(offset * sizeof(wchar_t)), std::ios::cur);
 				return ch;
 			}
 		}

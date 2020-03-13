@@ -7,11 +7,18 @@ int main(int argc, char* argv[])
 	std::cout << "\nFlaner Programming Language.\n--------\n\n";
 	
 	Lexer lexer(R"(D:\hello.fln)");
-	auto tokens = lexer.process();
-
-	for (auto i : tokens)
+	try
 	{
-		std::wcout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
+		auto tokens = lexer.process();
+
+		for (auto i : tokens)
+		{
+			std::wcout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
+		}
+	}
+	catch (const Lexer::LexError& e)
+	{
+		std::wcout << "Lexing error: " << e.info << "\nline " << e.line << ", offset " << e.offset << ".";
 	}
 
 	std::cout << "\n\n";
