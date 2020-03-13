@@ -75,6 +75,11 @@ namespace lexer
 			OP_LOGIC_OR,
 			OP_LOGIC_AND,
 
+			OP_BIT_NEGATE,
+			OP_BIT_OR,
+			OP_BIT_AND,
+			OP_BIT_XOR,
+
 			OP_BIT_NEGATE_ASSIGN,
 			OP_BIT_OR_ASSIGN,
 			OP_BIT_AND_ASSIGN,

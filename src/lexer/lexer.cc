@@ -150,9 +150,45 @@ namespace lexer
 					}
 					next();
 				}
-				if (test('='))
+			}
+			else if (match('|'))
+			{
+				if (test('|'))
 				{
-
+					push(TokenType::OP_LOGIC_OR, L"||");
+					next();
+				}
+				else
+				{
+					if (test('='))
+					{
+						push(TokenType::OP_BIT_OR_ASSIGN, L"|=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_BIT_OR, L"|");
+					}
+				}
+			}
+			else if (match('&'))
+			{
+				if (test('&'))
+				{
+					push(TokenType::OP_LOGIC_AND, L"&&");
+					next();
+				}
+				else
+				{
+					if (test('='))
+					{
+						push(TokenType::OP_BIT_OR_ASSIGN, L"&=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_BIT_OR, L"&");
+					}
 				}
 			}
 			else if (match('('))
