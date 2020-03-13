@@ -32,14 +32,13 @@ namespace lexer
 
 			if (iswdigit(ch))
 			{
-				std::wstring s;
-				while (iswdigit(ch))
+				std::wstring s{ ch };
+				while (iswdigit(ch) && iswdigit(context.lookNextChar()))
 				{
 					s += ch;
 					ch = next();
 				}
 				push(TokenType::NUMBER, s);
-				//ch = context.getLastChar();
 			}			
 			else if (match('+'))
 			{
@@ -91,7 +90,6 @@ namespace lexer
 			}
 			else if (match(')'))
 			{
-				std::cout << "-------\n" << std::endl;
 				push(TokenType::OP_PAREN_END, L")");
 			}
 			else
