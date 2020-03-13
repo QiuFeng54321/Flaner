@@ -44,6 +44,7 @@ namespace io
 		OpenMode openMode;
 
 		std::basic_fstream<wchar_t> object;
+		std::basic_string_view<wchar_t> data;
 	};
 }
 }

@@ -71,15 +71,7 @@ namespace lexer
             {
                 if (test('*'))
                 {
-                    if (test('=', 2))
-                    {
-                        push(TokenType::OP_QUOTE_ASSIGN, L"**=");
-                        next();
-                    }
-                    else
-                    {
-                        push(TokenType::OP_QUOTE, L"**");
-                    }
+                    push(TokenType::OP_POW, L"**");
                     next();
                 }
                 else
@@ -87,12 +79,12 @@ namespace lexer
                     if (test('='))
                     {
 
-                        push(TokenType::OP_MOD_ASSIGN, L"*=");
+                        push(TokenType::OP_MUL_ASSIGN, L"*=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_MOD, L"*");
+                        push(TokenType::OP_MUL, L"*");
                     }
                     next();
                 }
@@ -101,15 +93,7 @@ namespace lexer
             {
                 if (test('/'))
                 {
-                    if (test('=', 2))
-                    {
-                        push(TokenType::OP_INTDIV_ASSIGN, L"//=");
-                        next();
-                    }
-                    else
-                    {
-                        push(TokenType::OP_INTDIV_ASSIGN, L"//");
-                    }
+                    push(TokenType::OP_INTDIV_ASSIGN, L"//");
                     next();
                 }
                 else
@@ -129,16 +113,7 @@ namespace lexer
             {
                 if (test('%'))
                 {
-                    if (test('=', 2))
-                    {
-
-                        push(TokenType::OP_QUOTE_ASSIGN, L"%%=");
-                        next();
-                    }
-                    else
-                    {
-                        push(TokenType::OP_QUOTE, L"%%");
-                    }
+					push(TokenType::OP_QUOTE, L"%%");
                     next();
                 }
                 else
@@ -196,6 +171,21 @@ namespace lexer
                     }
                 }
             }
+			else if (match('='))
+			{
+				auto replace = [&](TokenType t1, TokenType t2, std::wstring s) {
+					if (sequence.back().type == t1)
+					{
+						sequence.pop_back();
+						push(t2, s);
+					}
+				};
+
+				replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, L"**=");
+				replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, L"%%=");
+				replace(TokenType::OP_INTDIV, TokenType::OP_INTDIV_ASSIGN, L"//=");
+
+			}
             else if (match('('))
             {
                 push(TokenType::OP_PAREN_BEGIN, L"(");
