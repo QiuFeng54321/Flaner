@@ -10,8 +10,8 @@ namespace lexer
 		auto push = [&](TokenType t, std::wstring v) {
 			sequence.push_back({ t, v });
 		};
-		auto next = [&]() {
-			return context.getNextChar();
+		auto next = [&](size_t offset = 1) {
+			return context.getNextChar(offset);
 		};
 
 		while (!context.isEnd())
@@ -26,14 +26,14 @@ namespace lexer
 			auto match = [&](wchar_t s) {
 				return ch == s;
 			};
-			auto test = [&](wchar_t s) {
-				return context.lookNextChar() == s;
+			auto test = [&](wchar_t s, size_t offset = 1) {
+				return context.lookNextChar(offset) == s;
 			};
 
 			if (iswdigit(ch))
 			{
 				std::wstring s{ ch };
-				while (iswdigit(ch) && iswdigit(context.lookNextChar()))
+				while (iswdigit(ch) && iswdigit(context.lookNextChar(1)))
 				{
 					s += ch;
 					ch = next();
@@ -42,46 +42,117 @@ namespace lexer
 			}			
 			else if (match('+'))
 			{
-				push(TokenType::OP_ADD, L"+");
+				if (test('='))
+				{
+					push(TokenType::OP_ADD_ASSIGN, L"+=");
+					next();
+				}
+				else
+				{
+					push(TokenType::OP_ADD, L"+");
+				}
 			}
 			else if (match('-'))
 			{
-				push(TokenType::OP_MINUS, L"-");
+				if (test('='))
+				{
+					push(TokenType::OP_MINUS_ASSIGN, L"-=");
+					next();
+				}
+				else
+				{
+					push(TokenType::OP_MINUS, L"-");
+				}
 			}
 			else if (match('*'))
 			{
 				if (test('*'))
 				{
-					push(TokenType::OP_POW, L"**");
+					if (test('=', 2))
+					{
+						push(TokenType::OP_POW_ASSIGN, L"**=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_POW, L"**");
+					}
 					next();
 				}
 				else
 				{
-					push(TokenType::OP_MUL, L"*");
+					if (test('='))
+					{
+						push(TokenType::OP_MUL_ASSIGN, L"*=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_MUL, L"*");
+					}
 				}
 			}
 			else if (match('/'))
 			{
 				if (test('/'))
 				{
-					push(TokenType::OP_INTDIV, L"//");
+					if (test('=', 2))
+					{
+						push(TokenType::OP_INTDIV_ASSIGN, L"//=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_INTDIV_ASSIGN, L"//");
+					}
 					next();
 				}
 				else
 				{
-					push(TokenType::OP_DIV, L"/");
+					if (test('='))
+					{
+						push(TokenType::OP_DIV_ASSIGN, L"/=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_DIV, L"/");
+					}
 				}
 			}
 			else if (match('%'))
 			{
 				if (test('%'))
 				{
-					push(TokenType::OP_QUOTE, L"%%");
+					if (test('='))
+					{
+
+						push(TokenType::OP_QUOTE_ASSIGN, L"%%=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_QUOTE, L"%%");
+					}
 					next();
 				}
 				else
 				{
-					push(TokenType::OP_MOD, L"%");
+					if (test('='))
+					{
+
+						push(TokenType::OP_MOD_ASSIGN, L"%=");
+						next();
+					}
+					else
+					{
+						push(TokenType::OP_MOD, L"%");
+					}
+					next();
+				}
+				if (test('='))
+				{
+
 				}
 			}
 			else if (match('('))
@@ -91,6 +162,22 @@ namespace lexer
 			else if (match(')'))
 			{
 				push(TokenType::OP_PAREN_END, L")");
+			}
+			else if (match('['))
+			{
+				push(TokenType::OP_BRACKET_BEGIN, L"[");
+			}
+			else if (match(']'))
+			{
+				push(TokenType::OP_BRACKET_END, L"]");
+			}
+			else if (match('{'))
+			{
+				push(TokenType::OP_BRACE_BEGIN, L"{");
+			}
+			else if (match('}'))
+			{
+				push(TokenType::OP_BRACE_END, L"}");
 			}
 			else
 			{

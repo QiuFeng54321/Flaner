@@ -19,8 +19,8 @@ namespace lexer
 		~Context() {}
 
 	public:
-		wchar_t getNextChar();
-		wchar_t lookNextChar();
+		wchar_t getNextChar(size_t offset);
+		wchar_t lookNextChar(size_t offset);
 		wchar_t getLastChar();
 		wchar_t lookLastChar();
 		bool isEnd();
