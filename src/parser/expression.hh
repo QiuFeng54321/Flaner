@@ -34,6 +34,12 @@ namespace syntax
 	public:
 	};
 
+	class UnaryNode : Expression
+	{
+	public:
+		Expression right;
+	};
+
 	class BinaryNode : Expression
 	{
 	public:

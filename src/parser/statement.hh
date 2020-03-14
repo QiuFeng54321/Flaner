@@ -2,6 +2,7 @@
 #define _FLANER_PARSER_STATEMENT_HH_
 
 #include <lexer/token.hh>
+#include <parser/expression.hh>
 #include <vector>
 
 namespace flaner
@@ -46,7 +47,7 @@ namespace syntax
 	class ExpressionStatement : Statement
 	{
 	public:
-
+		Expression expression;
 	};
 
 
