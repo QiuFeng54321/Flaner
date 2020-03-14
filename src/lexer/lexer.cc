@@ -311,8 +311,9 @@ namespace lexer
             }
 			else if (match('.'))
 			{
-				if (sequence.back().type == TokenType::OP_DOT_DOT)
+				if (sequence.size() != 0 && sequence.back().type == TokenType::OP_DOT_DOT)
 				{
+					sequence.pop_back();
 					push(TokenType::OP_DOT_DOT_DOT, L"...");
 				}
 				else if (test('.'))
