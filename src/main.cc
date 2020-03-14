@@ -1,4 +1,4 @@
-#include <lexer/lexer.hh>
+#include <parser/parser.hh>
 
 int main(int argc, char* argv[])
 {

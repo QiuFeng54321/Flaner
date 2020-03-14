@@ -1,21 +1,28 @@
-#ifndef _FLANER_PARSER_STATEMENT_HH_
-#define _FLANER_PARSER_STATEMENT_HH_
-
-#include <lexer/token.hh>
+#include <parser/statement.hh>
 
 namespace flaner
 {
 namespace parser
 {
-	class NullStatement
-	{};
-
-	class ExpressionStatement
+namespace syntax
+{
+	void StatementSequence::insert(Statement statement)
 	{
-
-	};
-
+		sequence.push_back(statement);
+	}
+	bool StatementSequence::isEnd()
+	{
+		return offset + 1 == sequence.size();
+	}
+	Statement StatementSequence::head()
+	{
+		return sequence.front();
+	}
+	Statement StatementSequence::next()
+	{
+		offset += 1;
+		return sequence.at(offset - 1);
+	}
 }
 }
-
-#endif // !_FLANER_PARSER_STATEMENT_HH_
+}
