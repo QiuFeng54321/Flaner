@@ -21,31 +21,6 @@ namespace lexer
 
 	Lexer::TokenType Lexer::getKeywordOrIdentity(std::wstring s)
 	{
-#define MAP(s, v) { L##s, TokenType::KEYWORD_##v },
-		std::unordered_map<std::wstring, TokenType> map
-		{
-			MAP("if", IF)
-			MAP("else", ELSE)
-			MAP("switch", SWITCH)
-			MAP("case", CASE)
-			MAP("default", DEFAULT)
-			MAP("while", WHILE)
-			MAP("do", DO)
-			MAP("for", FOR)
-			MAP("in", IN)
-			MAP("of", OF)
-			MAP("break", BREAK)
-			MAP("continue", CONTINUE)
-			MAP("throw", THROW)
-			MAP("return", RETURN)
-			MAP("const", CONST)
-			MAP("let", LET)
-			MAP("import", IMPORT)
-			MAP("export", EXPORT)
-			MAP("as", AS)
-			MAP("from", FROM)
-		};
-
 		TokenType type;
 
 		try
@@ -109,7 +84,14 @@ namespace lexer
 					nextChar = context.lookNextChar(1);
 					word += ch;
 				}
-				push(getKeywordOrIdentity(word), word);
+				if (sequence.back().type == TokenType::OP_DOT)
+				{
+					push(TokenType::IDENTITY, word);
+				}
+				else
+				{
+					push(getKeywordOrIdentity(word), word);
+				}
 			}
             else if (match('+'))
             {

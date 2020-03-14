@@ -28,7 +28,9 @@ namespace lexer
 			UNKNOWN,
 			END_OF_FILE,
 
-			BOOLEAN,
+			KEYWORD_NONE,
+			KEYWORD_TRUE,
+			KEYWORD_FALSE,
 			NUMBER,
 			STRING,
 			BIGINT,
@@ -128,6 +130,34 @@ namespace lexer
 
 	private:
 		std::vector<Token> sequence;
+#define MAP(s, v) { L##s, TokenType::KEYWORD_##v },
+		std::unordered_map<std::wstring, TokenType> map
+		{
+			MAP("none", NONE)
+			MAP("true", TRUE)
+			MAP("false", FALSE)
+			MAP("if", IF)
+			MAP("else", ELSE)
+			MAP("switch", SWITCH)
+			MAP("case", CASE)
+			MAP("default", DEFAULT)
+			MAP("while", WHILE)
+			MAP("do", DO)
+			MAP("for", FOR)
+			MAP("in", IN)
+			MAP("of", OF)
+			MAP("break", BREAK)
+			MAP("continue", CONTINUE)
+			MAP("throw", THROW)
+			MAP("return", RETURN)
+			MAP("const", CONST)
+			MAP("let", LET)
+			MAP("import", IMPORT)
+			MAP("export", EXPORT)
+			MAP("as", AS)
+			MAP("from", FROM)
+		};
+#undef MAP
 
 	public:
 		bool isBlank(wchar_t ch);
