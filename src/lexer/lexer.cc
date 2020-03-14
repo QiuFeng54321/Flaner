@@ -1,11 +1,65 @@
 #include <lexer/lexer.hh>
-#include <lexer/utility.hh>
 
 namespace flaner
 {
 namespace lexer
 {
-    std::vector<Lexer::Token> Lexer::process()
+	bool Lexer::isBlank(wchar_t ch)
+	{
+		std::wstring blanks = L"\n\r\t\f \x0b\xa0\u2000"
+			"\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009"
+			"\u200a\u200b\u2028\u2029\u3000";
+		for (auto i = blanks.begin(); i != blanks.end(); i++)
+		{
+			if (*i == ch)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	Lexer::TokenType Lexer::getKeywordOrIdentity(std::wstring s)
+	{
+#define MAP(s, v) { L##s, TokenType::KEYWORD_##v },
+		std::unordered_map<std::wstring, TokenType> map
+		{
+			MAP("if", IF)
+			MAP("else", ELSE)
+			MAP("switch", SWITCH)
+			MAP("case", CASE)
+			MAP("default", DEFAULT)
+			MAP("while", WHILE)
+			MAP("do", DO)
+			MAP("for", FOR)
+			MAP("in", IN)
+			MAP("of", OF)
+			MAP("break", BREAK)
+			MAP("continue", CONTINUE)
+			MAP("throw", THROW)
+			MAP("return", RETURN)
+			MAP("const", CONST)
+			MAP("let", LET)
+			MAP("import", IMPORT)
+			MAP("export", EXPORT)
+			MAP("as", AS)
+			MAP("from", FROM)
+		};
+
+		TokenType type;
+
+		try
+		{
+			type = map.at(s);
+		}
+		catch (const std::exception&)
+		{
+			type = TokenType::IDENTITY;
+		}
+		return type;
+	}
+
+	std::vector<Lexer::Token> Lexer::process()
     {
         auto push = [&](TokenType t, std::wstring v) {
             sequence.push_back({ t, v });
@@ -21,7 +75,7 @@ namespace lexer
         {
             wchar_t ch = next();
 
-            if (util::isBlank(ch))
+            if (isBlank(ch))
             {
                 continue;
             }
@@ -36,13 +90,27 @@ namespace lexer
             if (iswdigit(ch))
             {
                 std::wstring s{ ch };
-                while (iswdigit(ch) && iswdigit(context.lookNextChar(1)))
+				wchar_t nextChar = context.lookNextChar(1);
+                while (iswdigit(nextChar))
                 {
+					ch = next();
+					nextChar = context.lookNextChar(1);
                     s += ch;
-                    ch = next();
                 }
                 push(TokenType::NUMBER, s);
-            }            
+            }      
+			else if (iswalpha(ch) || ch == L'_' || ch == L'$')
+			{
+				std::wstring word{ ch };
+				wchar_t nextChar = context.lookNextChar(1);
+				while (iswalnum(nextChar) || ch == L'_' || ch == L'$')
+				{
+					ch = next();
+					nextChar = context.lookNextChar(1);
+					word += ch;
+				}
+				push(getKeywordOrIdentity(word), word);
+			}
             else if (match('+'))
             {
                 if (test('='))

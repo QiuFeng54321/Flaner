@@ -3,6 +3,7 @@
 
 #include <lexer/context.hh>
 #include <vector>
+#include <unordered_map>
 
 namespace flaner
 {
@@ -38,19 +39,24 @@ namespace lexer
 			KEYWORD_IF,
 			KEYWORD_ELSE,
 			KEYWORD_SWITCH,
+			KEYWORD_CASE,
+			KEYWORD_DEFAULT,
 			KEYWORD_WHILE,
 			KEYWORD_DO,
 			KEYWORD_FOR,
+			KEYWORD_IN,
+			KEYWORD_OF,
 			KEYWORD_BREAK,
 			KEYWORD_CONTINUE,
 			KEYWORD_RETURN,
 			KEYWORD_THROW,
 
 			KEYWORD_LET,
-			KETWORD_CONST,
+			KEYWORD_CONST,
 			KEYWORD_CLASS,
 			KEYWORD_IMPORT,
 			KEYWORD_EXPORT,
+			KEYWORD_FROM,
 			KEYWORD_AS,
 
 			OP_ADD,
@@ -122,6 +128,10 @@ namespace lexer
 
 	private:
 		std::vector<Token> sequence;
+
+	public:
+		bool isBlank(wchar_t ch);
+		TokenType getKeywordOrIdentity(std::wstring s);
 		
 	public:
 		std::vector<Token> process();
