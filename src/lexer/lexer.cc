@@ -271,7 +271,7 @@ namespace lexer
 						push(t2, s);
 						pureAssignment = false;
 					}
-				}
+				};
 
 				replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, L"**=");
 				replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, L"%%=");

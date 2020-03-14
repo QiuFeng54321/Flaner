@@ -3,7 +3,7 @@
 int main(int argc, char* argv[])
 {
     using namespace flaner::lexer;
-    setlocale(LC_ALL, "chs");
+
     std::cout << "\nFlaner Programming Language.\n--------\n\n";
     
     Lexer lexer(R"(D:\hello.fln)");
