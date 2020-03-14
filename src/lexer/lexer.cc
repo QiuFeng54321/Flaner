@@ -265,13 +265,13 @@ namespace lexer
 			{
 				bool pureAssignment = true;
 				auto replace = [&](TokenType t1, TokenType t2, std::wstring s) {
-					if (sequence.back().type == t1)
+					if (sequence.size() != 0 && sequence.back().type == t1)
 					{
 						sequence.pop_back();
 						push(t2, s);
 						pureAssignment = false;
 					}
-				};
+				}
 
 				replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, L"**=");
 				replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, L"%%=");
