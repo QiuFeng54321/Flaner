@@ -19,7 +19,7 @@ namespace lexer
 		return false;
 	}
 
-	Lexer::TokenType Lexer::getKeywordOrIdentity(std::wstring s)
+	Lexer::TokenType Lexer::getKeywordOrID(std::wstring s)
 	{
 		TokenType type;
 
@@ -29,7 +29,7 @@ namespace lexer
 		}
 		catch (const std::exception&)
 		{
-			type = TokenType::IDENTITY;
+			type = TokenType::IDENTIFIER;
 		}
 		return type;
 	}
@@ -86,11 +86,11 @@ namespace lexer
 				}
 				if (sequence.size() != 0 && sequence.back().type == TokenType::OP_DOT)
 				{
-					push(TokenType::IDENTITY, word);
+					push(TokenType::IDENTIFIER, word);
 				}
 				else
 				{
-					push(getKeywordOrIdentity(word), word);
+					push(getKeywordOrID(word), word);
 				}
 			}
             else if (match('+'))

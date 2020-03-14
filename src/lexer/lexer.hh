@@ -36,7 +36,7 @@ namespace lexer
 			BIGINT,
 			RATIONAL,
 
-			IDENTITY,
+			IDENTIFIER,
 
 			KEYWORD_IF,
 			KEYWORD_ELSE,
@@ -161,7 +161,7 @@ namespace lexer
 
 	public:
 		bool isBlank(wchar_t ch);
-		TokenType getKeywordOrIdentity(std::wstring s);
+		TokenType getKeywordOrID(std::wstring s);
 		
 	public:
 		std::vector<Token> process();
