@@ -43,7 +43,7 @@ namespace syntax
 		StatementSequence body;
 	};
 
-	class Expression : Statement
+	class ExpressionStatement : Statement
 	{
 	public:
 
