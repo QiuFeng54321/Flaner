@@ -84,7 +84,7 @@ namespace lexer
 					nextChar = context.lookNextChar(1);
 					word += ch;
 				}
-				if (sequence.back().type == TokenType::OP_DOT)
+				if (sequence.size() != 0 && sequence.back().type == TokenType::OP_DOT)
 				{
 					push(TokenType::IDENTITY, word);
 				}
@@ -309,6 +309,30 @@ namespace lexer
             {
                 push(TokenType::OP_BRACE_END, L"}");
             }
+			else if (match('.'))
+			{
+				if (sequence.back().type == TokenType::OP_DOT_DOT)
+				{
+					push(TokenType::OP_DOT_DOT_DOT, L"...");
+				}
+				else if (test('.'))
+				{
+					push(TokenType::OP_DOT_DOT, L"..");
+					next();
+				}
+				else
+				{
+					push(TokenType::OP_DOT, L".");
+				}
+			}
+			else if (match(':'))
+			{
+				push(TokenType::OP_COLON, L":");
+			}
+			else if (match('?'))
+			{
+				push(TokenType::OP_QUESTION, L"?");
+			}
             else
             {
                 if (ch == WEOF)
