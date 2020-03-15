@@ -23,16 +23,38 @@ namespace parser
 		using Type = lexer::Lexer::TokenType;
 
 	public:
-		Token getNextToken();
+		enum class Priority : uint16_t
+		{
+			comma,
+			spread,
+			yield,
+			assignment,
+			condition,
+			logical_or,
+			logical_and,
+			bit_or,
+			bit_xor,
+			bit_and,
+			equality,
+			relationship,
+			bit_shift,
+			addtion,
+			multition,
+			power,
+			unary_operator,
+			visitor,
+			group,
+		};
 
 	public:
-		void parseExpression(Token firstToken);
+		void parseExpression(Token firstToken, Priority priority);
 		syntax::StatementSequence getProgram();
 
 	public:
 		bool isBaseLiteral(Token token);
 		syntax::ListLiteralNode getListLiteral(Token token);
 		syntax::ObjectLiteralNode getObjectLiteral(Token token);
+		bool isBeginOperator(Token token);
 		bool isKeyword(Token token);
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);

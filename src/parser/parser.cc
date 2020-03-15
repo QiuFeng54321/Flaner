@@ -5,14 +5,28 @@ namespace flaner
 {
 namespace parser
 {
-    void Parser::parseExpression(Token token)
+    void Parser::parseExpression(Token token, Priority priority)
     {
         syntax::ExpressionStatement stm;
         stm.expression = syntax::Expression();
 
+		bool inExpression = true;
+
+		while (inExpression && !lexer.isEnd())
+		{
+			if (isOperator(token))
+			{
+				if (isUnaryOperator(token))
+				{
+					parseExpression(lexer.next(), )
+					syntax::UnaryNode node{ token.type,  };
+				}
+			}
+		}
+
 		// 3 * 6 + (2 - 8)
 		while (
-			(isOperator(token) || isLiteral(token) || isIdentifier(token))
+			(isOperator(token) || isBaseLiteral(token) || isIdentifier(token))
 			&& !lexer.isEnd())
 		{
 			if (isBaseLiteral(token))
@@ -21,10 +35,7 @@ namespace parser
 			}
 			else if (isOperator(token))
 			{
-				if (isUnaryOperator(token))
-				{
-					syntax::UnaryNode node(token.type, token.value );
-				}
+				
 			}
 			Token token = lexer.next();
 		}
