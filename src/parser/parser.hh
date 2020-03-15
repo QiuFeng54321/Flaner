@@ -12,10 +12,9 @@ namespace parser
 	{
 	public:
 		Parser(std::string path)
-			: tokenOffset(0)
+			: lexer(path)
 		{
-			lexer::Lexer lexer(path);
-			tokenStream = lexer.process();
+			lexer.process();
 		}
 		~Parser() {}
 
@@ -27,15 +26,17 @@ namespace parser
 		Token getNextToken();
 
 	public:
-		void parseExpression();
+		void parseExpression(Token firstToken);
 		syntax::StatementSequence getProgram();
 
 	public:
-		bool isLiteral(Token token);
-		bool getLiteral(Token token);
+		bool isBaseLiteral(Token token);
+		syntax::ListLiteralNode getListLiteral(Token token);
+		syntax::ObjectLiteralNode getObjectLiteral(Token token);
 		bool isKeyword(Token token);
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);
+		bool isUnaryOperator(Token token);
 
 	public:
 		struct SyntaxError
@@ -49,8 +50,7 @@ namespace parser
 		};
 
 	private:
-		std::vector<Token> tokenStream;
-		size_t tokenOffset;
+		lexer::Lexer lexer;
 		syntax::StatementSequence program;
 	};
 }

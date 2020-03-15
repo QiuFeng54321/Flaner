@@ -165,7 +165,7 @@ namespace lexer
 		TokenType getKeywordOrID(std::wstring s);
 		
 	public:
-		std::vector<Token> process();
+		void process();
 		Token forwards(size_t n = 1);
 		Token backwards(size_t n = 1);
 		Token next(size_t n = 1);

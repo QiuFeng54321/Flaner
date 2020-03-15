@@ -12,37 +12,73 @@ namespace parser
 {
 namespace syntax
 {
-	enum class Kind
-	{
-		ADD, MINUS, MUL, DIV, POW, INTDIV, MOD, QUOTE
-	};
+	using Kind = lexer::Lexer::TokenType;
 	class Expression;
 
 	class Expression
 	{
 	public:
-		Kind kind;
 	};
 
-	class LiteralNode : Expression
+	class BaseLiteralNode : Expression
 	{
 	public:
+		BaseLiteralNode(std::wstring val)
+			: value(val)
+		{}
+		std::wstring value;
+	};
+
+	class ListLiteralNode : Expression
+	{
+	public:
+		void push(Expression expr);
+		void pop();
+		std::vector<Expression> members;
+	};
+
+	class ObjectLiteralNode : Expression
+	{
+	public:
+		class Item
+		{
+		public:
+			IDNode key;
+			Expression value;
+		};
+		std::vector<Item> members;
+		void push(std::wstring name, Expression expr);
 	};
 
 	class IDNode : Expression
 	{
 	public:
+		IDNode(std::wstring val)
+			: name(val)
+		{}
+		std::wstring name;
 	};
 
 	class UnaryNode : Expression
 	{
 	public:
+		UnaryNode(Kind kind, Expression val = Expression{})
+			: kind(kind), 
+			right(val)
+		{}
+		Kind kind;
 		Expression right;
 	};
 
 	class BinaryNode : Expression
 	{
 	public:
+		BinaryNode(Kind kind, Expression val1 = {}, Expression val2 = {})
+			: kind(kind),
+			left(val1),
+			right(val2)
+		{}
+		Kind kind;
 		Expression left;
 		Expression right;
 	};

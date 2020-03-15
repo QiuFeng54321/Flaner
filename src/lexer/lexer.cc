@@ -34,7 +34,7 @@ namespace lexer
         return type;
     }
 
-    std::vector<Lexer::Token> Lexer::process()
+    void Lexer::process()
     {
         auto push = [&](TokenType t, std::wstring v) {
             sequence.push_back({ t, v });
@@ -346,7 +346,6 @@ namespace lexer
                 }
             }
         }
-        return sequence;
     }
 	Lexer::Token Lexer::forwards(size_t n)
 	{
