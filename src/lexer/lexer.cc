@@ -348,6 +348,37 @@ namespace lexer
         }
         return sequence;
     }
+	Lexer::Token Lexer::forwards(size_t n)
+	{
+		size_t offset = cursor + n;
+		if (offset >= sequence.size())
+		{
+			// TODO...
+		}
+		return sequence.at(offset);
+	}
+	Lexer::Token Lexer::backwards(size_t n)
+	{
+		if (n >= cursor)
+		{
+			// TODO...
+		}
+		return sequence.at(cursor - n);
+	}
+	Lexer::Token Lexer::next(size_t n)
+	{
+		cursor += n;
+		return forwards(0);
+	}
+	Lexer::Token Lexer::last(size_t n)
+	{
+		cursor -= n;
+		return backwards(0);
+	}
+	bool Lexer::isEnd()
+	{
+		return cursor >= sequence.size();
+	}
     void Lexer::error(std::wstring info)
     {
         throw LexError{ L"SyntaxError: " + info, context.lineOffset, context.charOffset };

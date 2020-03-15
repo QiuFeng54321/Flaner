@@ -130,6 +130,7 @@ namespace lexer
 
 	private:
 		std::vector<Token> sequence;
+		size_t cursor;
 #define MAP(s, v) { L##s, TokenType::KEYWORD_##v },
 		std::unordered_map<std::wstring, TokenType> map
 		{
@@ -165,6 +166,11 @@ namespace lexer
 		
 	public:
 		std::vector<Token> process();
+		Token forwards(size_t n = 1);
+		Token backwards(size_t n = 1);
+		Token next(size_t n = 1);
+		Token last(size_t n = 1);
+		bool isEnd();
 
 		struct LexError
 		{

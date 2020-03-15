@@ -14,10 +14,12 @@ namespace parser
     {
         syntax::ExpressionStatement stm;
         stm.expression = syntax::Expression();
-        if (isLiteral(getNextToken()))
-        {
 
-        }
+		// 3 * 6 + (2 - 8)
+		while (isOperator(token) || isLiteral(token) || isIdentifier(token))
+		{
+			Token token = getNextToken();
+		}
     }
 
     syntax::StatementSequence Parser::getProgram()

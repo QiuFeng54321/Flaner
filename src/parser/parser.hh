@@ -20,17 +20,22 @@ namespace parser
 		~Parser() {}
 
 	public:
-		lexer::Lexer::Token getNextToken();
+		using Token = lexer::Lexer::Token;
+		using Type = lexer::Lexer::TokenType;
+
+	public:
+		Token getNextToken();
 
 	public:
 		void parseExpression();
 		syntax::StatementSequence getProgram();
 
 	public:
-		bool isLiteral(lexer::Lexer::Token token);
-		bool isKeyword(lexer::Lexer::Token token);
-		bool isIdentifier(lexer::Lexer::Token token);
-		bool isOperator(lexer::Lexer::Token token);
+		bool isLiteral(Token token);
+		bool getLiteral(Token token);
+		bool isKeyword(Token token);
+		bool isIdentifier(Token token);
+		bool isOperator(Token token);
 
 	public:
 		struct SyntaxError
@@ -44,7 +49,7 @@ namespace parser
 		};
 
 	private:
-		std::vector<lexer::Lexer::Token> tokenStream;
+		std::vector<Token> tokenStream;
 		size_t tokenOffset;
 		syntax::StatementSequence program;
 	};
