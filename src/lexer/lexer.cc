@@ -25,7 +25,7 @@ namespace lexer
 
         try
         {
-            type = map.at(s);
+            type = keywordMap.at(s);
         }
         catch (const std::exception&)
         {
@@ -386,6 +386,14 @@ namespace lexer
 	bool Lexer::isEnd()
 	{
 		return cursor >= sequence.size();
+	}
+	std::unordered_map<std::wstring, Lexer::TokenType> Lexer::getKeywordMap()
+	{
+		return keywordMap;
+	}
+	std::unordered_set<Lexer::TokenType> Lexer::getOperatorSet()
+	{
+		return operatorSet;
 	}
     void Lexer::error(std::wstring info)
     {

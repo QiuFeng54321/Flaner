@@ -6,7 +6,7 @@ namespace parser
 {
 namespace syntax
 {
-	void ListLiteralNode::push(Expression expr)
+	void ListLiteralNode::push(std::shared_ptr<Expression> expr)
 	{
 		members.push_back(expr);
 	}
@@ -14,9 +14,9 @@ namespace syntax
 	{
 		members.pop_back();
 	}
-	void ObjectLiteralNode::push(std::wstring name, Expression expr)
+	void ObjectLiteralNode::push(std::wstring name, std::shared_ptr<Expression> expr)
 	{
-		members.push_back({ name, expr });
+		members.push_back({ std::make_shared<IDNode>(name), expr });
 	}
 }
 }

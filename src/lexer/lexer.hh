@@ -4,6 +4,7 @@
 #include <lexer/context.hh>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 
 namespace flaner
 {
@@ -52,6 +53,7 @@ namespace lexer
 			KEYWORD_CONTINUE,
 			KEYWORD_RETURN,
 			KEYWORD_THROW,
+			KEYWORD_YIELD,
 
 			KEYWORD_LET,
 			KEYWORD_CONST,
@@ -90,7 +92,6 @@ namespace lexer
 			OP_BIT_AND,
 			OP_BIT_XOR,
 
-			OP_BIT_NEGATE_ASSIGN,
 			OP_BIT_OR_ASSIGN,
 			OP_BIT_AND_ASSIGN,
 			OP_BIT_XOR_ASSIGN,
@@ -136,7 +137,7 @@ namespace lexer
 		std::vector<Token> sequence;
 		size_t cursor;
 #define MAP(s, v) { L##s, TokenType::KEYWORD_##v },
-		std::unordered_map<std::wstring, TokenType> map
+		std::unordered_map<std::wstring, TokenType> keywordMap
 		{
 			MAP("none", NONE)
 			MAP("true", TRUE)
@@ -164,6 +165,71 @@ namespace lexer
 		};
 #undef MAP
 
+		std::unordered_set<TokenType> operatorSet
+		{
+			TokenType::KEYWORD_IN,
+			TokenType::KEYWORD_OF,
+
+			TokenType::OP_ADD,
+			TokenType::OP_MINUS,
+			TokenType::OP_MUL,
+			TokenType::OP_INTDIV,
+			TokenType::OP_DIV,
+			TokenType::OP_MOD,
+			TokenType::OP_QUOTE,
+			TokenType::OP_POW,
+
+			TokenType::OP_ADD_ASSIGN,
+			TokenType::OP_MINUS_ASSIGN,
+			TokenType::OP_MUL_ASSIGN,
+			TokenType::OP_INTDIV_ASSIGN,
+			TokenType::OP_DIV_ASSIGN,
+			TokenType::OP_MOD_ASSIGN,
+			TokenType::OP_QUOTE_ASSIGN,
+			TokenType::OP_POW_ASSIGN,
+
+			TokenType::OP_LOGIC_NEGATE,
+			TokenType::OP_LOGIC_OR,
+			TokenType::OP_LOGIC_AND,
+
+			TokenType::OP_BIT_NEGATE,
+			TokenType::OP_BIT_OR,
+			TokenType::OP_BIT_AND,
+			TokenType::OP_BIT_XOR,
+
+			TokenType::OP_BIT_NEGATE_ASSIGN,
+			TokenType::OP_BIT_OR_ASSIGN,
+			TokenType::OP_BIT_AND_ASSIGN,
+			TokenType::OP_BIT_XOR_ASSIGN,
+
+			TokenType::OP_SHIFT_LEFT,
+			TokenType::OP_SHIFT_RIGHT,
+			TokenType::OP_SHIFT_LEFT_ASSIGN,
+			TokenType::OP_SHIFT_RIGHT_ASSIGN,
+
+			TokenType::OP_LESS_THAN,
+			TokenType::OP_GREATER_THAN,
+			TokenType::OP_LESS_EQUAL,
+			TokenType::OP_GREATER_EQUAL,
+			TokenType::OP_EQUAL,
+			TokenType::OP_NOT_EUQAL,
+
+			TokenType::OP_ASSIGN,
+			TokenType::OP_COLON,
+			TokenType::OP_QUESTION,
+			TokenType::OP_COMMA,
+			TokenType::OP_DOT,
+			TokenType::OP_DOT_DOT,
+			TokenType::OP_DOT_DOT_DOT,
+
+			TokenType::OP_PAREN_BEGIN,
+			TokenType::OP_PAREN_END,
+			TokenType::OP_BRACKET_BEGIN,
+			TokenType::OP_BRACKET_END,
+			TokenType::OP_BRACE_BEGIN,
+			TokenType::OP_BRACE_END,
+		};
+
 	public:
 		bool isBlank(wchar_t ch);
 		TokenType getKeywordOrID(std::wstring s);
@@ -176,6 +242,8 @@ namespace lexer
 		Token last(size_t n = 1);
 		Token now();
 		bool isEnd();
+		std::unordered_map<std::wstring, TokenType> getKeywordMap();
+		std::unordered_set<TokenType> getOperatorSet();
 
 		struct LexError
 		{

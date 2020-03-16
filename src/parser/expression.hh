@@ -1,6 +1,7 @@
 #ifndef _FLANER_PARSER_EXPRESSION_HH_
 #define _FLANER_PARSER_EXPRESSION_HH_
 
+#include <lexer/lexer.hh>
 #include <string>
 #include <vector>
 #include <map>
@@ -22,7 +23,7 @@ namespace syntax
 
 	};
 
-	class BaseLiteralNode : Expression
+	class BaseLiteralNode : public Expression
 	{
 	public:
 		BaseLiteralNode(std::wstring val)
@@ -31,7 +32,7 @@ namespace syntax
 		std::wstring value;
 	};
 
-	class ListLiteralNode 
+	class ListLiteralNode : public Expression
 	{
 	public:
 		void push(std::shared_ptr<Expression> expr);
@@ -39,7 +40,16 @@ namespace syntax
 		std::vector<std::shared_ptr<Expression>> members;
 	};
 
-	class ObjectLiteralNode 
+	class IDNode : public Expression
+	{
+	public:
+		IDNode(std::wstring name)
+			: name(name)
+		{}
+		std::wstring name;
+	};
+
+	class ObjectLiteralNode : public Expression
 	{
 	public:
 		class Item
@@ -52,22 +62,8 @@ namespace syntax
 		void push(std::wstring name, std::shared_ptr<Expression> expr);
 	};
 
-	class IDNode : Expression
-	{
-	public:
-		using ptr = std::shared_ptr<IDNode>;
-		IDNode(std::wstring val)
-			: name(val)
-		{}
-		std::wstring getName() const
-		{
-			return name;
-		}
-	private:
-		std::wstring name;
-	};
 
-	class UnaryNode 
+	class UnaryNode : public Expression
 	{
 	public:
 		UnaryNode(Kind kind, std::shared_ptr<Expression> val = {})
@@ -78,7 +74,7 @@ namespace syntax
 		std::shared_ptr<Expression> right;
 	};
 
-	class BinaryNode 
+	class BinaryNode : public Expression
 	{
 	public:
 		BinaryNode(Kind kind, std::shared_ptr<Expression> val1 = {}, std::shared_ptr<Expression> val2 = {})
@@ -91,7 +87,7 @@ namespace syntax
 		std::shared_ptr<Expression> right;
 	};
 
-	class TernaryNode 
+	class TernaryNode : public Expression
 	{
 	public:
 		std::shared_ptr<Expression> condition;
@@ -99,7 +95,7 @@ namespace syntax
 		std::shared_ptr<Expression> right;
 	};
 
-	class CallingNode 
+	class CallingNode : public Expression
 	{
 	public:
 		std::shared_ptr<Expression> function;

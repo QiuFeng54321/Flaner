@@ -61,7 +61,7 @@ namespace parser
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);
 		bool isLeftAssociation(Token token);
-		Priority getPriority(Token token);
+		Priority getPriority(Token token, bool isNegation = false);
 		bool isUnaryOperator(Token token);
 
 	public:

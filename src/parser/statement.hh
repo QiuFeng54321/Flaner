@@ -30,12 +30,12 @@ namespace syntax
 		size_t offset;
 	};
 
-	class NullStatement : Statement
+	class NullStatement : public Statement
 	{
 	public:
 	};
 
-	class BlockStatement : Statement
+	class BlockStatement : public Statement
 	{
 	public:
 		BlockStatement() : body({}) {}
@@ -45,7 +45,7 @@ namespace syntax
 		StatementSequence body;
 	};
 
-	class ExpressionStatement : Statement
+	class ExpressionStatement : public Statement
 	{
 	public:
 		ExpressionStatement() {}
