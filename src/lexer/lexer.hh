@@ -197,7 +197,6 @@ namespace lexer
 			TokenType::OP_BIT_AND,
 			TokenType::OP_BIT_XOR,
 
-			TokenType::OP_BIT_NEGATE_ASSIGN,
 			TokenType::OP_BIT_OR_ASSIGN,
 			TokenType::OP_BIT_AND_ASSIGN,
 			TokenType::OP_BIT_XOR_ASSIGN,

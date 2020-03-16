@@ -37,7 +37,7 @@ namespace parser
             // 否则只是普通的值，直接移入输出流
             else if (isIdentifier(token))
             {
-                if (lexer.forwards().type == Type::OP_PAREN_BEIGN)
+                if (lexer.forwards().type == Type::OP_PAREN_BEGIN)
                 {
                     stack.push(token);
                 }
@@ -57,7 +57,7 @@ namespace parser
                 while (!stack.empty())
                 {
                     Token el = stack.top();
-                    if (el.type == Type::OP_PAREN_BEIGN)
+                    if (el.type == Type::OP_PAREN_BEGIN)
                     {
                         parenBegin = true;
                         break;
@@ -96,7 +96,7 @@ namespace parser
                 }
                 stack.push(token);
             }
-            else if (token.type == Type::OP_PAREN_BEIGN)
+            else if (token.type == Type::OP_PAREN_BEGIN)
             {
                 parensCount += 1;
                 stack.push(token);
@@ -107,7 +107,7 @@ namespace parser
                 bool parenBegin = false;
                 while (!stack.empty()) {
                     Token el = stack.top();
-                    if (el.type == Type::OP_PAREN_BEIGN)
+                    if (el.type == Type::OP_PAREN_BEGIN)
                     {
                         parenBegin = true;
                         break;
@@ -157,7 +157,7 @@ namespace parser
         while (!stack.empty())
         {
             Token el = stack.top();
-            if (el.type == Type::OP_PAREN_BEIGN || el.type == Type::OP_PAREN_END)
+            if (el.type == Type::OP_PAREN_BEGIN || el.type == Type::OP_PAREN_END)
             {
                 throw new UnexpectedToken_SyntaxError(el);
             }
@@ -189,9 +189,9 @@ namespace parser
     {
         switch (token.type)
         {
-        case Type::OP_PAREN_BEIGN:
-        case Type::OP_BRACKET_BEIGN:
-        case Type::OP_BRACE_BEIGN:
+        case Type::OP_PAREN_BEGIN:
+        case Type::OP_BRACKET_BEGIN:
+        case Type::OP_BRACE_BEGIN:
             return true;
         default:
             return false;
@@ -299,6 +299,7 @@ namespace parser
 			return Priority::visitor;
 		default:
 			// TODO...
+			break;
 		};
 	}
 
