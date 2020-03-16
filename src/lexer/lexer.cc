@@ -34,7 +34,7 @@ namespace lexer
         return type;
     }
 
-    void Lexer::process()
+    std::vector<Lexer::Token> Lexer::process()
     {
         auto push = [&](TokenType t, std::wstring v) {
             sequence.push_back({ t, v });
@@ -334,6 +334,10 @@ namespace lexer
             {
                 push(TokenType::OP_QUESTION, L"?");
             }
+			else if (match(';'))
+			{
+				push(TokenType::OP_SEMICOLON, L";");
+			}
             else
             {
                 if (ch == WEOF)
@@ -346,6 +350,7 @@ namespace lexer
                 }
             }
         }
+		return sequence;
     }
 	Lexer::Token Lexer::forwards(size_t n)
 	{

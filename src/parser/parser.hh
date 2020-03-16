@@ -60,7 +60,7 @@ namespace parser
 		bool isKeyword(Token token);
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);
-		bool isLeftAssciation(Token token);
+		bool isLeftAssociation(Token token);
 		Priority getPriority(Token token);
 		bool isUnaryOperator(Token token);
 

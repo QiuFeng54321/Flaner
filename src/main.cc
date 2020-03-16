@@ -1,4 +1,4 @@
-#include <parser/parser.hh>
+#include <lexer/lexer.hh>
 
 int main(int argc, char* argv[])
 {
@@ -9,12 +9,11 @@ int main(int argc, char* argv[])
     Lexer lexer(R"(D:\hello.fln)");
     try
     {
-        auto tokens = lexer.process();
-
-        for (auto i : tokens)
-        {
-            std::wcout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
-        }
+		auto tokens = lexer.process();
+		for (auto i :tokens)
+		{
+			std::wcout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
+		}
     }
     catch (const Lexer::LexError& e)
     {

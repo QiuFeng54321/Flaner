@@ -61,6 +61,8 @@ namespace lexer
 			KEYWORD_FROM,
 			KEYWORD_AS,
 
+			FUNCTION_ARROW,
+
 			OP_ADD,
 			OP_MINUS,
 			OP_MUL,
@@ -119,6 +121,8 @@ namespace lexer
 			OP_BRACKET_END,
 			OP_BRACE_BEGIN,
 			OP_BRACE_END,
+
+			OP_SEMICOLON,
 		};
 
 		struct Token
@@ -165,7 +169,7 @@ namespace lexer
 		TokenType getKeywordOrID(std::wstring s);
 		
 	public:
-		void process();
+		std::vector<Token> process();
 		Token forwards(size_t n = 1);
 		Token backwards(size_t n = 1);
 		Token next(size_t n = 1);

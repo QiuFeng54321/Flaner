@@ -7,46 +7,7 @@ namespace parser
 {
     syntax::Expression Parser::parseExpression(Token token, Priority priority)
     {
-        syntax::ExpressionStatement stm;
-		stm.expression = {};
-
-		if (token.type == Type::IDENTIFIER)
-		{
-			return syntax::IDNode(token.value);
-		}
-
-		if (token.type == Type::OP_PAREN_BEGIN)
-		{
-
-		}
-
-		while (inExpression && !lexer.isEnd())
-		{
-			if (isOperator(token))
-			{
-				if (isUnaryOperator(token))
-				{
-					parseExpression(lexer.next(), )
-					syntax::UnaryNode node{ token.type,  };
-				}
-			}
-		}
-
-		// 3 * 6 + (2 - 8)
-		while (
-			(isOperator(token) || isBaseLiteral(token) || isIdentifier(token))
-			&& !lexer.isEnd())
-		{
-			if (isBaseLiteral(token))
-			{
-				syntax::LiteralNode node(token.value);
-			}
-			else if (isOperator(token))
-			{
-				
-			}
-			Token token = lexer.next();
-		}
+		return {};
     }
 
     syntax::StatementSequence Parser::getProgram()
