@@ -357,7 +357,7 @@ namespace lexer
 		size_t offset = cursor + n;
 		if (offset >= sequence.size())
 		{
-			// TODO...
+			return { TokenType::END_OF_FILE, { WEOF } };
 		}
 		return sequence.at(offset);
 	}
@@ -371,6 +371,7 @@ namespace lexer
 	}
 	Lexer::Token Lexer::next(size_t n)
 	{
+		std::cout << "222\n";
 		cursor += n;
 		return forwards(0);
 	}

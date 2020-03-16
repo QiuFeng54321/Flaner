@@ -15,7 +15,7 @@ namespace lexer
 	public:
 		Lexer(std::string path)
 			: context(path),
-			sequence()
+			sequence(), cursor(0)
 		{}
 
 		~Lexer() {}
@@ -248,6 +248,11 @@ namespace lexer
 		{
 			std::wstring info;
 			size_t line, offset;
+			LexError(std::wstring s, size_t a, size_t b)
+				: info(L"LexError: " + s),
+				line(a), offset(b)
+			{
+			}
 		};
 		void error(std::wstring info);
 	};

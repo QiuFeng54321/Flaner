@@ -22,9 +22,10 @@ namespace parser
 
         uint16_t parensCount = 0;
 
-        while (true)
+        while (!lexer.isEnd())
         {
             Token token = lexer.now();
+			std::cout << "111\n";
 
             // 字面值可以直接移入输出流中
             // TODO: 添加对复杂字面值的支持
@@ -150,7 +151,7 @@ namespace parser
                 break;
             }
 
-            lexer.next();
+			lexer.next();
         }
 
         // 处理 stack 中余留的 tokens
