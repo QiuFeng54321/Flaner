@@ -3,6 +3,7 @@
 
 #include <lexer/lexer.hh>
 #include <parser/statement.hh>
+#include <stack>
 
 namespace flaner
 {
@@ -47,8 +48,9 @@ namespace parser
 		};
 
 	public:
-		void parseExpression(Token firstToken, Priority priority);
+		syntax::Expression parseExpression(Token firstToken, Priority priority);
 		syntax::StatementSequence getProgram();
+		std::vector<Token> shuntingYard();
 
 	public:
 		bool isBaseLiteral(Token token);
@@ -58,6 +60,8 @@ namespace parser
 		bool isKeyword(Token token);
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);
+		bool isLeftAssciation(Token token);
+		Priority getPriority(Token token);
 		bool isUnaryOperator(Token token);
 
 	public:
@@ -65,9 +69,18 @@ namespace parser
 		{
 			std::wstring info;
 			size_t line, offset;
+			SyntaxError(){}
 			SyntaxError(std::wstring s)
 			{
 				info = L"SyntaxError: " + s;
+			}
+		};
+
+		struct UnexpectedToken_SyntaxError : SyntaxError
+		{
+			UnexpectedToken_SyntaxError(Token token)
+			{
+				info = L"SyntaxError: Unexpected token `" + token.value + L"`";
 			}
 		};
 

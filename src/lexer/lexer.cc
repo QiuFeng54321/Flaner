@@ -374,6 +374,10 @@ namespace lexer
 		cursor -= n;
 		return backwards(0);
 	}
+	Lexer::Token Lexer::now()
+	{
+		return sequence.at(cursor);
+	}
 	bool Lexer::isEnd()
 	{
 		return cursor >= sequence.size();

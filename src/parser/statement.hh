@@ -14,7 +14,8 @@ namespace syntax
 	class Statement
 	{
 	public:
-
+		Statement()
+		{}
 	};
 
 	class StatementSequence
@@ -47,8 +48,10 @@ namespace syntax
 	class ExpressionStatement : Statement
 	{
 	public:
-		Expression expression;
+		ExpressionStatement() {}
+		std::shared_ptr<Expression> expression;
 	};
+
 
 
 }

@@ -170,6 +170,7 @@ namespace lexer
 		Token backwards(size_t n = 1);
 		Token next(size_t n = 1);
 		Token last(size_t n = 1);
+		Token now();
 		bool isEnd();
 
 		struct LexError

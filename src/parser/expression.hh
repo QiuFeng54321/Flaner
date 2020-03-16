@@ -13,11 +13,13 @@ namespace parser
 namespace syntax
 {
 	using Kind = lexer::Lexer::TokenType;
-	class Expression;
 
 	class Expression
 	{
 	public:
+		Expression() {}
+		virtual ~Expression() {}
+
 	};
 
 	class BaseLiteralNode : Expression
@@ -29,73 +31,79 @@ namespace syntax
 		std::wstring value;
 	};
 
-	class ListLiteralNode : Expression
+	class ListLiteralNode 
 	{
 	public:
-		void push(Expression expr);
+		void push(std::shared_ptr<Expression> expr);
 		void pop();
-		std::vector<Expression> members;
+		std::vector<std::shared_ptr<Expression>> members;
 	};
 
-	class ObjectLiteralNode : Expression
+	class ObjectLiteralNode 
 	{
 	public:
 		class Item
 		{
 		public:
-			IDNode key;
-			Expression value;
+			std::shared_ptr<IDNode> key;
+			std::shared_ptr<Expression> value;
 		};
 		std::vector<Item> members;
-		void push(std::wstring name, Expression expr);
+		void push(std::wstring name, std::shared_ptr<Expression> expr);
 	};
 
 	class IDNode : Expression
 	{
 	public:
+		using ptr = std::shared_ptr<IDNode>;
 		IDNode(std::wstring val)
 			: name(val)
 		{}
+		std::wstring getName() const
+		{
+			return name;
+		}
+	private:
 		std::wstring name;
 	};
 
-	class UnaryNode : Expression
+	class UnaryNode 
 	{
 	public:
-		UnaryNode(Kind kind, Expression val = Expression{})
+		UnaryNode(Kind kind, std::shared_ptr<Expression> val = {})
 			: kind(kind), 
 			right(val)
 		{}
 		Kind kind;
-		Expression right;
+		std::shared_ptr<Expression> right;
 	};
 
-	class BinaryNode : Expression
+	class BinaryNode 
 	{
 	public:
-		BinaryNode(Kind kind, Expression val1 = {}, Expression val2 = {})
+		BinaryNode(Kind kind, std::shared_ptr<Expression> val1 = {}, std::shared_ptr<Expression> val2 = {})
 			: kind(kind),
 			left(val1),
 			right(val2)
 		{}
 		Kind kind;
-		Expression left;
-		Expression right;
+		std::shared_ptr<Expression> left;
+		std::shared_ptr<Expression> right;
 	};
 
-	class TernaryNode : Expression
+	class TernaryNode 
 	{
 	public:
-		Expression condition;
-		Expression left;
-		Expression right;
+		std::shared_ptr<Expression> condition;
+		std::shared_ptr<Expression> left;
+		std::shared_ptr<Expression> right;
 	};
 
-	class CallNode : Expression
+	class CallingNode 
 	{
 	public:
-		Expression function;
-		std::vector<Expression> arguments;
+		std::shared_ptr<Expression> function;
+		std::vector<std::shared_ptr<Expression>> arguments;
 	};
 }
 }
