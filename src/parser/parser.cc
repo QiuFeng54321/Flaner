@@ -16,13 +16,18 @@ namespace parser
 			return item;
 		};
 
-		std::shared_ptr<syntax::Expression> expr;
+		auto parseBaseLiteral = [](Token token)
+		{
+			return std::make_shared<syntax::BaseLiteralNode>(token);
+		};
+
+		std::shared_ptr<syntax::Expression> expr = nullptr;
 
 		for (auto i : postfixExprTokens)
 		{
 			if (isBaseLiteral(i))
 			{
-				stack.push(std::make_shared<syntax::BaseLiteralNode>(i));
+				stack.push(parseBaseLiteral(i));
 			}
 			else if (isOperator(i))
 			{
@@ -30,7 +35,7 @@ namespace parser
 				auto val2 = pop();
 				if (expr)
 				{
-
+					expr = std::make_shared<Binary
 				}
 				auto expr = std::make_shared<syntax::BinaryNode>(i.type, val1, val2);
 			}

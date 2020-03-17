@@ -5,7 +5,9 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <variant>
+#include <algorithm>
+#include <deps/json.hpp>
+#include <deps/enum.h>
 
 namespace flaner
 {
@@ -14,14 +16,16 @@ namespace parser
 namespace syntax
 {
 	using Kind = lexer::Lexer::TokenType;
+	using json = nlohmann::json;
 
 	class Expression
 	{
 	public:
 		Expression() {}
 		virtual ~Expression() {}
-		virtual std::wstring stringify() {}
+		virtual std::wstring stringify() = delete;
 
+		json tree;
 	};
 
 	class BaseLiteralNode : public Expression
@@ -44,30 +48,42 @@ namespace syntax
 			case lexer::Lexer::TokenType::KEYWORD_TRUE:
 			case lexer::Lexer::TokenType::KEYWORD_FALSE:
 				kind = boolean;
+				kind_description = L"boolean";
 				break;
 			case lexer::Lexer::TokenType::NUMBER:
 				kind = number;
+				kind_description = L"number";
 				break;
 			case lexer::Lexer::TokenType::STRING:
 				kind = string;
+				kind_description = L"string";
 				break;
 			case lexer::Lexer::TokenType::KEYWORD_NONE:
 				kind = none;
+				kind_description = L"none";
 				break;
 			case lexer::Lexer::TokenType::BIGINT:
 				kind = bigint;
+				kind_description = L"bigint";
 				break;
 			case lexer::Lexer::TokenType::RATIONAL:
 				kind = rational;
+				kind_description = L"rational";
 				break;
 			default:
 				// TODO...
 				break;
 			}
+
+			tree = {
+				{ "description", "base-literal" },
+				{ "type", kind_description },
+				{ "value", value },
+			};
 		}
 		std::wstring value;
 		LiteralKind kind;
-
+		std::wstring kind_description;
 	};
 
 	class ListLiteralNode : public Expression
@@ -83,7 +99,12 @@ namespace syntax
 	public:
 		IDNode(std::wstring name)
 			: name(name)
-		{}
+		{
+			tree = {
+				{ "description", "identifier" },
+			    { "name", name },
+			};
+		}
 		std::wstring name;
 	};
 
@@ -119,7 +140,15 @@ namespace syntax
 			: kind(kind),
 			left(val1),
 			right(val2)
-		{}
+		{
+
+			tree = {
+				{ "description", "binary-expression" },
+			    { "type", static_cast<int>(kind) },
+				{ "left", left->tree },
+			    { "right", right->tree },
+			};
+		}
 		Kind kind;
 		std::shared_ptr<Expression> left;
 		std::shared_ptr<Expression> right;
