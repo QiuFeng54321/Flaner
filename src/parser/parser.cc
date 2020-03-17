@@ -5,8 +5,23 @@ namespace flaner
 {
 namespace parser
 {
-    syntax::Expression Parser::parseExpression(Token token, Priority priority)
+    syntax::Expression Parser::parseExpression()
     {
+		auto exprStack = shuntingYard();
+		auto pop = [&]() {
+			auto el = exprStack.top();
+			exprStack.pop();
+			return el;
+		};
+		std::shared_ptr<syntax::Expression> expr = {};
+		while (!exprStack.empty())
+		{
+			Token token = pop();
+			if (true)
+			{
+
+			}
+		}
         return {};
     }
 
@@ -15,23 +30,30 @@ namespace parser
         return syntax::StatementSequence();
     }
 	
-    std::vector<Parser::Token> Parser::shuntingYard()
+    std::stack<Parser::Token> Parser::shuntingYard()
     {
-        std::vector<Token> output;
+        std::stack<std::shared_ptr<syntax::Expression>> output;
         std::stack<Token> stack;
+
+		std::shared_ptr<syntax::Expression> expr = {};
 
         uint16_t parensCount = 0;
 
         while (!lexer.isEnd())
         {
             Token token = lexer.now();
-			std::cout << "111\n";
+			
+			if (token.type == Type::OP_SEMICOLON)
+			{
+				goto end;
+			}
 
             // 字面值可以直接移入输出流中
             // TODO: 添加对复杂字面值的支持
             if (isBaseLiteral(token))
             {
-                output.push_back(token);
+				expr = std::make_shared<syntax::BaseLiteralNode>(token.value, token.type);
+				output.push(expr);
             }
 
             // 如果标识符后跟随 '('，那么它是一个函数名，放入栈中
@@ -44,7 +66,7 @@ namespace parser
                 }
                 else
                 {
-                    output.push_back(token);
+                    output.push(token);
                 }
             }
 
@@ -65,7 +87,7 @@ namespace parser
                     }
                     else
                     {
-                        output.push_back(el);
+                        output.push(el);
                         stack.pop();
                     }
                 }
@@ -87,7 +109,7 @@ namespace parser
                         ((isLeftAssociation(token) && (getPriority(token) <= getPriority(el))) ||
                         (!isLeftAssociation(token) && (getPriority(token) < getPriority(el)))))
                     {
-                        output.push_back(el);
+                        output.push(el);
                         stack.pop();
                     }
                     else
@@ -115,7 +137,7 @@ namespace parser
                     }
                     else
                     {
-                        output.push_back(el);
+                        output.push(el);
                         stack.pop();
                     }
                     if (!parenBegin)
@@ -129,7 +151,7 @@ namespace parser
                         Token el = stack.top();
                         if (el.type == Type::IDENTIFIER)
                         {
-                            output.push_back(el);
+                            output.push(el);
                             stack.pop();
                         }
                     }
@@ -140,7 +162,7 @@ namespace parser
 
             // 不属于表达式的 token
             else
-            {
+            {				
                 // 若此时还处于小括号包裹内
                 if (parensCount != 0)
                 {
@@ -154,17 +176,21 @@ namespace parser
 			lexer.next();
         }
 
+		std::cout << "----------\n";
+
         // 处理 stack 中余留的 tokens
-        while (!stack.empty())
+        end: while (!stack.empty())
         {
             Token el = stack.top();
-            if (el.type == Type::OP_PAREN_BEGIN || el.type == Type::OP_PAREN_END)
-            {
-                throw new UnexpectedToken_SyntaxError(el);
-            }
-            output.push_back(el);
+            //if (el.type == Type::OP_PAREN_BEGIN || el.type == Type::OP_PAREN_END)
+           // {
+			//	std::cout << "22222222\n";
+            //    throw new UnexpectedToken_SyntaxError(el);
+            //}
+            output.push(el);
             stack.pop();
         }
+
 
         // 完成
         return output;

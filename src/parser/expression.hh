@@ -26,10 +26,45 @@ namespace syntax
 	class BaseLiteralNode : public Expression
 	{
 	public:
-		BaseLiteralNode(std::wstring val)
+		enum LiteralKind
+		{
+			boolean,
+			number,
+			bigint,
+			rational,
+			string,
+			none,
+		};
+		BaseLiteralNode(std::wstring val, lexer::Lexer::TokenType type)
 			: value(val)
-		{}
+		{
+			switch (type)
+			{
+			case lexer::Lexer::TokenType::KEYWORD_TRUE:
+			case lexer::Lexer::TokenType::KEYWORD_FALSE:
+				kind = boolean;
+				break;
+			case lexer::Lexer::TokenType::NUMBER:
+				kind = number;
+				break;
+			case lexer::Lexer::TokenType::STRING:
+				kind = string;
+				break;
+			case lexer::Lexer::TokenType::KEYWORD_NONE:
+				kind = none;
+				break;
+			case lexer::Lexer::TokenType::BIGINT:
+				kind = bigint;
+				break;
+			case lexer::Lexer::TokenType::RATIONAL:
+				kind = rational;
+				break;
+			default:
+				// TODO...
+			}
+		}
 		std::wstring value;
+		LiteralKind kind;
 	};
 
 	class ListLiteralNode : public Expression

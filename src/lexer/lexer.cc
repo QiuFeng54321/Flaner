@@ -371,7 +371,6 @@ namespace lexer
 	}
 	Lexer::Token Lexer::next(size_t n)
 	{
-		std::cout << "222\n";
 		cursor += n;
 		return forwards(0);
 	}

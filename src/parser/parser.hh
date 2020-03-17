@@ -48,9 +48,9 @@ namespace parser
 		};
 
 	public:
-		syntax::Expression parseExpression(Token firstToken, Priority priority);
+		syntax::Expression parseExpression();
 		syntax::StatementSequence getProgram();
-		std::vector<Token> shuntingYard();
+		std::stack<Token> shuntingYard();
 
 	public:
 		bool isBaseLiteral(Token token);
