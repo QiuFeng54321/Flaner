@@ -20,6 +20,7 @@ namespace syntax
 	public:
 		Expression() {}
 		virtual ~Expression() {}
+		virtual std::wstring stringify() {}
 
 	};
 
@@ -35,10 +36,10 @@ namespace syntax
 			string,
 			none,
 		};
-		BaseLiteralNode(std::wstring val, lexer::Lexer::TokenType type)
-			: value(val)
+		BaseLiteralNode(lexer::Lexer::Token token)
 		{
-			switch (type)
+			value = token.value;
+			switch (token.type)
 			{
 			case lexer::Lexer::TokenType::KEYWORD_TRUE:
 			case lexer::Lexer::TokenType::KEYWORD_FALSE:
@@ -66,6 +67,7 @@ namespace syntax
 		}
 		std::wstring value;
 		LiteralKind kind;
+
 	};
 
 	class ListLiteralNode : public Expression

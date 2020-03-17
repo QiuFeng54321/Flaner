@@ -7,7 +7,39 @@ namespace parser
 {
     syntax::Expression Parser::parseExpression()
     {
-		shuntingYard();
+		auto postfixExprTokens = shuntingYard();
+		std::stack<std::shared_ptr<syntax::BaseLiteralNode>> stack;
+
+		auto pop = [&]() {
+			auto item = stack.top();
+			stack.pop();
+			return item;
+		};
+
+		std::shared_ptr<syntax::Expression> expr;
+
+		for (auto i : postfixExprTokens)
+		{
+			if (isBaseLiteral(i))
+			{
+				stack.push(std::make_shared<syntax::BaseLiteralNode>(i));
+			}
+			else if (isOperator(i))
+			{
+				auto val1 = pop();
+				auto val2 = pop();
+				if (expr)
+				{
+
+				}
+				auto expr = std::make_shared<syntax::BinaryNode>(i.type, val1, val2);
+			}
+			else
+			{
+				// TODO...
+			}
+		}
+
         return {};
     }
 
@@ -206,6 +238,19 @@ namespace parser
         }
     }
 
+	bool Parser::isEndOperator(Token token)
+	{
+		switch(token.type)
+		{
+		case Type::OP_PAREN_END:
+		case Type::OP_BRACKET_END:
+		case Type::OP_BRACE_END:
+			return true;
+		default:
+			return false;
+		}
+	}
+
     bool Parser::isKeyword(Token token)
     {
         auto map = lexer.getKeywordMap();
@@ -249,9 +294,12 @@ namespace parser
 	{
 		switch (token.type)
 		{
-		case Type::OP_COMMA: return Priority::comma;
-		case Type::OP_DOT_DOT_DOT: return Priority::spread;
-		case Type::KEYWORD_YIELD: return Priority::yield;
+		case Type::OP_COMMA:
+			return Priority::comma;
+		case Type::OP_DOT_DOT_DOT:
+			return Priority::spread;
+		case Type::KEYWORD_YIELD:
+			return Priority::yield;
 		case Type::OP_ADD_ASSIGN:
 		case Type::OP_MINUS_ASSIGN:
 		case Type::OP_MUL_ASSIGN:

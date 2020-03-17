@@ -57,6 +57,7 @@ namespace parser
 		syntax::ListLiteralNode getListLiteral(Token token);
 		syntax::ObjectLiteralNode getObjectLiteral(Token token);
 		bool isBeginOperator(Token token);
+		bool isEndOperator(Token token);
 		bool isKeyword(Token token);
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);
