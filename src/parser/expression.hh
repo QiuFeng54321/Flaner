@@ -61,6 +61,7 @@ namespace syntax
 				break;
 			default:
 				// TODO...
+				break;
 			}
 		}
 		std::wstring value;

@@ -7,21 +7,7 @@ namespace parser
 {
     syntax::Expression Parser::parseExpression()
     {
-		auto exprStack = shuntingYard();
-		auto pop = [&]() {
-			auto el = exprStack.top();
-			exprStack.pop();
-			return el;
-		};
-		std::shared_ptr<syntax::Expression> expr = {};
-		while (!exprStack.empty())
-		{
-			Token token = pop();
-			if (true)
-			{
-
-			}
-		}
+		shuntingYard();
         return {};
     }
 
@@ -30,12 +16,10 @@ namespace parser
         return syntax::StatementSequence();
     }
 	
-    std::stack<Parser::Token> Parser::shuntingYard()
+    std::vector<Parser::Token> Parser::shuntingYard()
     {
-        std::stack<std::shared_ptr<syntax::Expression>> output;
+        std::vector<Token> output;
         std::stack<Token> stack;
-
-		std::shared_ptr<syntax::Expression> expr = {};
 
         uint16_t parensCount = 0;
 
@@ -52,8 +36,7 @@ namespace parser
             // TODO: 添加对复杂字面值的支持
             if (isBaseLiteral(token))
             {
-				expr = std::make_shared<syntax::BaseLiteralNode>(token.value, token.type);
-				output.push(expr);
+                output.push_back(token);
             }
 
             // 如果标识符后跟随 '('，那么它是一个函数名，放入栈中
@@ -66,7 +49,7 @@ namespace parser
                 }
                 else
                 {
-                    output.push(token);
+                    output.push_back(token);
                 }
             }
 
@@ -87,7 +70,7 @@ namespace parser
                     }
                     else
                     {
-                        output.push(el);
+                        output.push_back(el);
                         stack.pop();
                     }
                 }
@@ -109,7 +92,7 @@ namespace parser
                         ((isLeftAssociation(token) && (getPriority(token) <= getPriority(el))) ||
                         (!isLeftAssociation(token) && (getPriority(token) < getPriority(el)))))
                     {
-                        output.push(el);
+                        output.push_back(el);
                         stack.pop();
                     }
                     else
@@ -137,7 +120,7 @@ namespace parser
                     }
                     else
                     {
-                        output.push(el);
+                        output.push_back(el);
                         stack.pop();
                     }
                     if (!parenBegin)
@@ -151,7 +134,7 @@ namespace parser
                         Token el = stack.top();
                         if (el.type == Type::IDENTIFIER)
                         {
-                            output.push(el);
+                            output.push_back(el);
                             stack.pop();
                         }
                     }
@@ -176,8 +159,6 @@ namespace parser
 			lexer.next();
         }
 
-		std::cout << "----------\n";
-
         // 处理 stack 中余留的 tokens
         end: while (!stack.empty())
         {
@@ -187,7 +168,7 @@ namespace parser
 			//	std::cout << "22222222\n";
             //    throw new UnexpectedToken_SyntaxError(el);
             //}
-            output.push(el);
+            output.push_back(el);
             stack.pop();
         }
 

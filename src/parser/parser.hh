@@ -50,7 +50,7 @@ namespace parser
 	public:
 		syntax::Expression parseExpression();
 		syntax::StatementSequence getProgram();
-		std::stack<Token> shuntingYard();
+		std::vector<Token> shuntingYard();
 
 	public:
 		bool isBaseLiteral(Token token);
