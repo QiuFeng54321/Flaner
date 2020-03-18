@@ -51,6 +51,7 @@ namespace parser
 		syntax::Expression parseExpression();
 		syntax::StatementSequence getProgram();
 		std::vector<Token> shuntingYard();
+		std::pair<std::vector<Token>, std::vector<Token>> convertExpression();
 
 	public:
 		bool isBaseLiteral(Token token);
@@ -61,7 +62,9 @@ namespace parser
 		bool isKeyword(Token token);
 		bool isIdentifier(Token token);
 		bool isOperator(Token token);
+		bool isAssignment(Token token);
 		bool isLeftAssociation(Token token);
+		bool isRightAssociation(Token token);
 		Priority getPriority(Token token, bool isNegation = false);
 		bool isUnaryOperator(Token token);
 

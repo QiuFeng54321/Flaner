@@ -23,7 +23,7 @@ namespace parser
 
 		std::shared_ptr<syntax::Expression> expr = nullptr;
 
-		for (auto i : postfixExprTokens)
+		/*for (auto i : postfixExprTokens)
 		{
 			if (isBaseLiteral(i))
 			{
@@ -31,20 +31,23 @@ namespace parser
 			}
 			else if (isOperator(i))
 			{
-				auto val1 = pop();
-				auto val2 = pop();
-				if (expr)
+				auto left = pop();
+				if (!expr)
 				{
-					expr = std::make_shared<Binary
+					auto right = pop();
+					expr = std::make_shared<syntax::BinaryNode>(i.type, left, right);
 				}
-				auto expr = std::make_shared<syntax::BinaryNode>(i.type, val1, val2);
+				else
+				{
+					expr = std::make_shared<syntax::BinaryNode>(i.type, )
+				}
 			}
 			else
 			{
 				// TODO...
 			}
 		}
-
+		*/
         return {};
     }
 
@@ -52,167 +55,70 @@ namespace parser
     {
         return syntax::StatementSequence();
     }
-	
-    std::vector<Parser::Token> Parser::shuntingYard()
-    {
-        std::vector<Token> output;
-        std::stack<Token> stack;
 
-        uint16_t parensCount = 0;
+	std::vector<Parser::Token> Parser::shuntingYard()
+	{
+		std::stack<Token> operatorStack;
+		std::vector<Token> outputQueue;
 
-        while (!lexer.isEnd())
-        {
-            Token token = lexer.now();
-			
-			if (token.type == Type::OP_SEMICOLON)
+		auto pop = [&]() {
+			auto item = operatorStack.top();
+			operatorStack.pop();
+			return item;
+		};
+
+		while (!lexer.isEnd())
+		{
+			Token token = lexer.now();
+
+			if (isBaseLiteral(token))
 			{
-				goto end;
+				outputQueue.push_back(token);
+			}
+			else if (isIdentifier(token))
+			{
+				// 如果标识符表示一个函数，那么放入栈中
+				if (lexer.forwards().type == Type::OP_PAREN_BEGIN)
+				{
+					operatorStack.push(token);
+				}
+				else
+				{
+					outputQueue.push_back(token);
+				}
+			}
+			else if (token.type == Type::OP_COMMA)
+			{
+				while (operatorStack.top().type != Type:::OP_PAREN_BEGIN)
+				{
+					outputQueue.push_back(pop());
+				}
+			}
+			else if (isOperator(token))
+			{
+				Token el = operatorStack.top();
+				if (isOperator(el))
+				{
+					while (isLeftAssociation(token) && (getPriority(token) <= getPriority(el))
+						|| isRightAssociation(token) && (getPriority(token) < getPriority(el)))
+					{
+						outputQueue.push_back(pop());
+					}
+				}
+				operatorStack.push(token);
 			}
 
-            // 字面值可以直接移入输出流中
-            // TODO: 添加对复杂字面值的支持
-            if (isBaseLiteral(token))
-            {
-                output.push_back(token);
-            }
-
-            // 如果标识符后跟随 '('，那么它是一个函数名，放入栈中
-            // 否则只是普通的值，直接移入输出流
-            else if (isIdentifier(token))
-            {
-                if (lexer.forwards().type == Type::OP_PAREN_BEGIN)
-                {
-                    stack.push(token);
-                }
-                else
-                {
-                    output.push_back(token);
-                }
-            }
-
-            // 从栈当中不断地弹出操作符并且放入输出队列中，直到栈顶部的元素为 '(' 为止
-            // 将 '(' 从栈的顶端弹出，但并不放入输出队列中去
-            // 如果此时位于栈顶端的记号表示一个函数，那么将其弹出并放入输出队列中去
-            // 如果在找到 '(' 之前栈就已经弹出了所有元素，那么就表示在表达式中存在不匹配的括号
-            else if (token.type == Type::OP_COMMA)
-            {
-                bool parenBegin = false;
-                while (!stack.empty())
-                {
-                    Token el = stack.top();
-                    if (el.type == Type::OP_PAREN_BEGIN)
-                    {
-                        parenBegin = true;
-                        break;
-                    }
-                    else
-                    {
-                        output.push_back(el);
-                        stack.pop();
-                    }
-                }
-                throw new UnexpectedToken_SyntaxError(token);
-            }
-
-            // 如果 token 是一个运算符
-            // 只要栈的顶端存在另一个运算符 el，并且
-            //     如果 token 是左结合的，且它的优先级 ≤ el 的优先级，或者
-            //     如果 token 是右结合的，且它的优先级 ≤ el 的优先级，那么
-            //     将 el 从栈的顶端弹出并且放入输出队列中（循环直至以上条件不满足为止）
-            //     然后，将 el 压入栈的顶端。
-            else if (isOperator(token))
-            {
-                while (!stack.empty())
-                {
-                    Token el = stack.top();
-                    if (isOperator(el) &&
-                        ((isLeftAssociation(token) && (getPriority(token) <= getPriority(el))) ||
-                        (!isLeftAssociation(token) && (getPriority(token) < getPriority(el)))))
-                    {
-                        output.push_back(el);
-                        stack.pop();
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-                stack.push(token);
-            }
-            else if (token.type == Type::OP_PAREN_BEGIN)
-            {
-                parensCount += 1;
-                stack.push(token);
-            }
-            else if (token.type == Type::OP_PAREN_END)
-            {
-                parensCount -= 1;
-                bool parenBegin = false;
-                while (!stack.empty()) {
-                    Token el = stack.top();
-                    if (el.type == Type::OP_PAREN_BEGIN)
-                    {
-                        parenBegin = true;
-                        break;
-                    }
-                    else
-                    {
-                        output.push_back(el);
-                        stack.pop();
-                    }
-                    if (!parenBegin)
-                    {
-                        throw new UnexpectedToken_SyntaxError(token);
-                    }
-
-                    stack.pop();
-                    if (!stack.empty())
-                    {
-                        Token el = stack.top();
-                        if (el.type == Type::IDENTIFIER)
-                        {
-                            output.push_back(el);
-                            stack.pop();
-                        }
-                    }
-
-
-                }
-            }
-
-            // 不属于表达式的 token
-            else
-            {				
-                // 若此时还处于小括号包裹内
-                if (parensCount != 0)
-                {
-                    throw new UnexpectedToken_SyntaxError(token);
-                }
-
-                // 已经从输入流中获取到了完整的表达式，现在结束
-                break;
-            }
-
 			lexer.next();
-        }
+		}
 
-        // 处理 stack 中余留的 tokens
-        end: while (!stack.empty())
-        {
-            Token el = stack.top();
-            //if (el.type == Type::OP_PAREN_BEGIN || el.type == Type::OP_PAREN_END)
-           // {
-			//	std::cout << "22222222\n";
-            //    throw new UnexpectedToken_SyntaxError(el);
-            //}
-            output.push_back(el);
-            stack.pop();
-        }
+		return std::vector<Token>();
+	}
+	
 
-
-        // 完成
-        return output;
-    }
+	std::pair<std::vector<Parser::Token>, std::vector<Parser::Token>> Parser::convertExpression()
+	{
+		return std::pair<std::vector<Token>, std::vector<Token>>();
+	}
 
 	
     bool Parser::isBaseLiteral(Token token)
@@ -285,6 +191,8 @@ namespace parser
 		std::unordered_set<Type> set
 		{
 			Type::OP_DOT,
+			Type::OP_ADD,
+			Type::OP_MINUS,
 			Type::OP_MUL,
 			Type::OP_DIV,
 			Type::OP_INTDIV,
@@ -294,6 +202,16 @@ namespace parser
 		};
 		return set.find(token.type) != set.end();
     }
+
+	bool Parser::isRightAssociation(Token token)
+	{
+		std::unordered_set<Type> set
+		{
+			Type::OP_POW,
+
+		};
+		return set.find(token.type) != set.end();
+	}
 
 	Parser::Priority Parser::getPriority(Token token, bool isNegation)
 	{
