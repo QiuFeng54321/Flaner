@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 #include <map>
-#include <algorithm>
+#include <variant>
 #include <deps/json.hpp>
 #include <deps/enum.h>
 
@@ -16,6 +16,7 @@ namespace parser
 namespace syntax
 {
 	using Kind = lexer::Lexer::TokenType;
+	using Token = lexer::Lexer::Token;
 	using json = nlohmann::json;
 
 	class Expression
@@ -40,6 +41,7 @@ namespace syntax
 			string,
 			none,
 		};
+		BaseLiteralNode() {}
 		BaseLiteralNode(lexer::Lexer::Token token)
 		{
 			value = token.value;
@@ -86,7 +88,42 @@ namespace syntax
 		std::wstring kind_description;
 	};
 
-	class ListLiteralNode : public Expression
+	class Numeric
+	{
+	public:
+		Numeric(Token source)
+		{
+			// TODO...
+		}
+		std::variant<int64_t, double> value;
+	};
+
+	class String
+	{
+	public:
+		String(Token source)
+		{
+
+		}
+		std::wstring value;
+	};
+
+	class Boolean
+	{
+	public:
+		Boolean(Token source)
+		{
+
+		}
+		bool value;
+	};
+
+	class None
+	{
+	public:
+	};
+
+	class ListLiteral : public Expression
 	{
 	public:
 		void push(std::shared_ptr<Expression> expr);
@@ -108,7 +145,7 @@ namespace syntax
 		std::wstring name;
 	};
 
-	class ObjectLiteralNode : public Expression
+	class ObjectLiteral : public Expression
 	{
 	public:
 		class Item
@@ -121,6 +158,23 @@ namespace syntax
 		void push(std::wstring name, std::shared_ptr<Expression> expr);
 	};
 
+
+	class PrimaryNode : public Expression
+	{
+	public:
+		PrimaryNode(Token source)
+		{
+			switch (source.type)
+			{
+			case Kind::KEYWORD_NONE:
+
+			default:
+				break;
+			}
+			value = source;
+		}
+		std::variant<None, Numeric, String, Boolean, ListLiteral, ObjectLiteral> value;
+	};
 
 	class UnaryNode : public Expression
 	{

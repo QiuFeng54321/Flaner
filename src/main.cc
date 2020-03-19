@@ -6,17 +6,14 @@ int main(int argc, char* argv[])
 	using namespace flaner::parser;
 
 	Parser parser(R"(D:\hello.fln)");
-	auto vec = parser.shuntingYard();
+	parser.parseExpressionStatement();
 
 
 	std::cout << "\nFlaner Programming Language.\n--------\n\n";
 
 	try
 	{
-		for (auto i : vec)
-		{
-			std::wcout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
-		}
+		
 	}
 	catch (const Lexer::LexError& e)
 	{

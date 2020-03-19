@@ -48,7 +48,10 @@ namespace syntax
 	class ExpressionStatement : public Statement
 	{
 	public:
-		ExpressionStatement() {}
+		ExpressionStatement(std::shared_ptr<Expression> expr)
+		    : expression(expr)
+		{
+		}
 		std::shared_ptr<Expression> expression;
 	};
 

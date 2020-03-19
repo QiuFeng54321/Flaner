@@ -5,50 +5,34 @@ namespace flaner
 {
 namespace parser
 {
-    syntax::Expression Parser::parseExpression()
+	std::shared_ptr<syntax::Expression> Parser::parsePrimary()
+	{
+		return std::shared_ptr<syntax::Expression>();
+	}
+	std::shared_ptr<syntax::Expression> Parser::parseExpression(
+		std::shared_ptr<syntax::Expression> lhs, Priority base)
     {
-		auto postfixExprTokens = shuntingYard();
-		std::stack<std::shared_ptr<syntax::BaseLiteralNode>> stack;
-
-		auto pop = [&]() {
-			auto item = stack.top();
-			stack.pop();
-			return item;
-		};
-
-		auto parseBaseLiteral = [](Token token)
+		std::cout << "aaaaa\n";
+		Token token = lexer.forwards();
+		while (isBinaryOperator(token) && getPriority(token) >= base)
 		{
-			return std::make_shared<syntax::BaseLiteralNode>(token);
-		};
+			Token op = token;
+			lexer.next();
 
-		std::shared_ptr<syntax::Expression> expr = nullptr;
+			auto rhs = parsePrimary();
 
-		/*for (auto i : postfixExprTokens)
-		{
-			if (isBaseLiteral(i))
+			token = lexer.forwards();
+
+			while (isBinaryOperator(token) && getPriority(token) > getPriority(op)
+				|| isRightAssociation(token) && getPriority(token) == getPriority(op))
 			{
-				stack.push(parseBaseLiteral(i));
+				rhs = parseExpression(rhs, getPriority(token));
+				token = lexer.forwards();
 			}
-			else if (isOperator(i))
-			{
-				auto left = pop();
-				if (!expr)
-				{
-					auto right = pop();
-					expr = std::make_shared<syntax::BinaryNode>(i.type, left, right);
-				}
-				else
-				{
-					expr = std::make_shared<syntax::BinaryNode>(i.type, )
-				}
-			}
-			else
-			{
-				// TODO...
-			}
+
+			lhs = std::make_shared<syntax::BinaryNode>(op.type, lhs, rhs);
 		}
-		*/
-        return {};
+		return lhs;
     }
 
     syntax::StatementSequence Parser::getProgram()
@@ -89,7 +73,7 @@ namespace parser
 			}
 			else if (token.type == Type::OP_COMMA)
 			{
-				while (operatorStack.top().type != Type:::OP_PAREN_BEGIN)
+				while (operatorStack.top().type != Type::OP_PAREN_BEGIN)
 				{
 					outputQueue.push_back(pop());
 				}
@@ -118,6 +102,12 @@ namespace parser
 	std::pair<std::vector<Parser::Token>, std::vector<Parser::Token>> Parser::convertExpression()
 	{
 		return std::pair<std::vector<Token>, std::vector<Token>>();
+	}
+
+	std::shared_ptr<syntax::ExpressionStatement> Parser::parseExpressionStatement()
+	{
+		return std::make_shared<syntax::ExpressionStatement>(
+			parseExpression(parsePrimary(), static_cast<Priority>(0)));
 	}
 
 	
@@ -185,6 +175,11 @@ namespace parser
         auto set = lexer.getOperatorSet();
         return set.find(token.type) != set.end();
     }
+
+	bool Parser::isAssignment(Token token)
+	{
+		return false;
+	}
 
     bool Parser::isLeftAssociation(Token token)
     {
@@ -280,6 +275,11 @@ namespace parser
 			// TODO...
 			break;
 		};
+	}
+
+	bool Parser::isBinaryOperator(Token token)
+	{
+		return false;
 	}
 
 }
