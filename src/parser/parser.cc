@@ -5,14 +5,63 @@ namespace flaner
 {
 namespace parser
 {
+	std::shared_ptr<syntax::ListLiteral> Parser::parseListLiteral()
+	{
+		return std::shared_ptr<syntax::ListLiteral>();
+	}
+	std::shared_ptr<syntax::ObjectLiteral> Parser::parseObjectLiteral()
+	{
+		return std::shared_ptr<syntax::ObjectLiteral>();
+	}
 	std::shared_ptr<syntax::Expression> Parser::parsePrimary()
 	{
-		return std::shared_ptr<syntax::Expression>();
+		std::shared_ptr<syntax::PrimaryNode> primary = {};
+
+		Token now = lexer.now();
+		switch (now.type)
+		{
+		case Type::NUMBER:
+			primary = std::make_shared<syntax::Numeric>(now);
+			break;
+		case Type::STRING:
+			primary = std::make_shared<syntax::String>(now);
+			break;
+		case Type::BIGINT:
+			primary = std::make_shared<syntax::BigInt>(now);
+			break;
+		case Type::RATIONAL:
+			primary = std::make_shared<syntax::Rational>(now);
+			break;
+		case Type::KEYWORD_TRUE:
+		case Type::KEYWORD_FALSE:
+			primary = std::make_shared<syntax::Boolean>(now);
+			break;
+		case Type::KEYWORD_NONE:
+			primary = std::make_shared<syntax::None>();
+			break;
+		case Type::OP_BRACKET_BEGIN:
+			primary = parseListLiteral();
+			break;
+		case Type::OP_BRACE_BEGIN:
+		{
+			// 仅当 '{' 跟随于操作符后面时，作为对象字面量解析
+			if (isOperator(lexer.backwards()))
+			{
+				primary = parseObjectLiteral();
+			}
+			else
+			{
+				// TODO...
+			}
+		}
+		default:
+			break;
+		}
 	}
+
 	std::shared_ptr<syntax::Expression> Parser::parseExpression(
 		std::shared_ptr<syntax::Expression> lhs, Priority base)
     {
-		std::cout << "aaaaa\n";
 		Token token = lexer.forwards();
 		while (isBinaryOperator(token) && getPriority(token) >= base)
 		{

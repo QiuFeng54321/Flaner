@@ -88,7 +88,14 @@ namespace syntax
 		std::wstring kind_description;
 	};
 
-	class Numeric
+
+	class PrimaryNode : public Expression
+	{
+	public:
+
+	};
+
+	class Numeric : PrimaryNode
 	{
 	public:
 		Numeric(Token source)
@@ -98,7 +105,15 @@ namespace syntax
 		std::variant<int64_t, double> value;
 	};
 
-	class String
+	class BigInt : public PrimaryNode
+	{};
+
+	class Rational : public PrimaryNode
+	{
+
+	};
+
+	class String : public PrimaryNode
 	{
 	public:
 		String(Token source)
@@ -108,7 +123,7 @@ namespace syntax
 		std::wstring value;
 	};
 
-	class Boolean
+	class Boolean : public PrimaryNode
 	{
 	public:
 		Boolean(Token source)
@@ -118,12 +133,12 @@ namespace syntax
 		bool value;
 	};
 
-	class None
+	class None : public PrimaryNode
 	{
 	public:
 	};
 
-	class ListLiteral : public Expression
+	class ListLiteral : public PrimaryNode
 	{
 	public:
 		void push(std::shared_ptr<Expression> expr);
@@ -145,7 +160,7 @@ namespace syntax
 		std::wstring name;
 	};
 
-	class ObjectLiteral : public Expression
+	class ObjectLiteral : public PrimaryNode
 	{
 	public:
 		class Item
@@ -156,24 +171,6 @@ namespace syntax
 		};
 		std::vector<Item> members;
 		void push(std::wstring name, std::shared_ptr<Expression> expr);
-	};
-
-
-	class PrimaryNode : public Expression
-	{
-	public:
-		PrimaryNode(Token source)
-		{
-			switch (source.type)
-			{
-			case Kind::KEYWORD_NONE:
-
-			default:
-				break;
-			}
-			value = source;
-		}
-		std::variant<None, Numeric, String, Boolean, ListLiteral, ObjectLiteral> value;
 	};
 
 	class UnaryNode : public Expression

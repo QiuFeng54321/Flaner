@@ -48,6 +48,8 @@ namespace parser
 		};
 
 	public:
+		std::shared_ptr<syntax::ListLiteral> parseListLiteral();
+		std::shared_ptr<syntax::ObjectLiteral> parseObjectLiteral();
 		std::shared_ptr<syntax::Expression> parsePrimary();
 		std::shared_ptr<syntax::Expression> parseExpression(
 			std::shared_ptr<syntax::Expression> rhs, Priority base);
