@@ -6,7 +6,7 @@ int main(int argc, char* argv[])
 	using namespace flaner::parser;
 
 	Parser parser(R"(D:\hello.fln)");
-	parser.parseExpressionStatement();
+	auto program = parser.parseExpressionStatement();
 
 
 	std::cout << "\nFlaner Programming Language.\n--------\n\n";

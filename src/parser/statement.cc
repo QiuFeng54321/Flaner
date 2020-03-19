@@ -6,7 +6,7 @@ namespace parser
 {
 namespace syntax
 {
-    void StatementSequence::insert(Statement statement)
+    void StatementSequence::insert(std::shared_ptr<Statement> statement)
     {
         sequence.push_back(statement);
     }
@@ -14,11 +14,11 @@ namespace syntax
     {
         return offset + 1 == sequence.size();
     }
-    Statement StatementSequence::head()
+    std::shared_ptr<Statement> StatementSequence::head()
     {
         return sequence.front();
     }
-    Statement StatementSequence::next()
+	std::shared_ptr<Statement> StatementSequence::next()
     {
         offset += 1;
         return sequence.at(offset - 1);

@@ -21,12 +21,12 @@ namespace syntax
 	class StatementSequence
 	{
 	public:
-		void insert(Statement statement);
+		void insert(std::shared_ptr<Statement> statement);
 		bool isEnd();
-		Statement head();
-		Statement next();
+		std::shared_ptr<Statement> head();
+		std::shared_ptr<Statement> next();
 	private:
-		std::vector<Statement> sequence;
+		std::vector<std::shared_ptr<Statement>> sequence;
 		size_t offset;
 	};
 

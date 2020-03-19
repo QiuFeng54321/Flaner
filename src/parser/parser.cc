@@ -15,7 +15,7 @@ namespace parser
 	}
 	std::shared_ptr<syntax::Expression> Parser::parsePrimary()
 	{
-		std::shared_ptr<syntax::PrimaryNode> primary = {};
+		std::shared_ptr<syntax::Expression> primary;
 
 		Token now = lexer.now();
 		switch (now.type)
@@ -57,6 +57,8 @@ namespace parser
 		default:
 			break;
 		}
+
+		return primary;
 	}
 
 	std::shared_ptr<syntax::Expression> Parser::parseExpression(
@@ -86,7 +88,7 @@ namespace parser
 
     syntax::StatementSequence Parser::getProgram()
     {
-        return syntax::StatementSequence();
+		return program;
     }
 
 	std::vector<Parser::Token> Parser::shuntingYard()
@@ -155,8 +157,10 @@ namespace parser
 
 	std::shared_ptr<syntax::ExpressionStatement> Parser::parseExpressionStatement()
 	{
-		return std::make_shared<syntax::ExpressionStatement>(
+		auto stm = std::make_shared<syntax::ExpressionStatement>(
 			parseExpression(parsePrimary(), static_cast<Priority>(0)));
+		program.insert(stm);
+		return stm;
 	}
 
 	

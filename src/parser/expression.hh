@@ -95,7 +95,7 @@ namespace syntax
 
 	};
 
-	class Numeric : PrimaryNode
+	class Numeric : public PrimaryNode
 	{
 	public:
 		Numeric(Token source)
@@ -106,11 +106,21 @@ namespace syntax
 	};
 
 	class BigInt : public PrimaryNode
-	{};
+	{
+	public:
+		BigInt(Token token)
+		{
+			
+		}
+	};
 
 	class Rational : public PrimaryNode
 	{
+	public:
+		Rational(Token token)
+		{
 
+		}
 	};
 
 	class String : public PrimaryNode
