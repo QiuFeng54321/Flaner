@@ -15,7 +15,19 @@ namespace syntax
 	{
 	public:
 		Statement()
-		{}
+		{
+			tree =
+			{
+				{ "type", "unknown" },
+			};
+		}
+
+		json getTree()
+		{
+			return tree;
+		}
+	private:
+		json tree;
 	};
 
 	class StatementSequence
@@ -51,8 +63,16 @@ namespace syntax
 		ExpressionStatement(std::shared_ptr<Expression> expr)
 		    : expression(expr)
 		{
+			tree =
+			{
+				{ "type", "Expression" },
+			    { "children", 1111 },
+			};
 		}
 		std::shared_ptr<Expression> expression;
+
+	private:
+		json tree;
 	};
 
 

@@ -7,7 +7,7 @@ namespace flaner
 {
     namespace lexer
     {        
-        wchar_t Context::getNextChar(size_t offset)
+        char Context::getNextchar(size_t offset)
         {
             if (offset == 1)
             {
@@ -15,11 +15,11 @@ namespace flaner
             }
             else
             {
-                source.object.seekp((offset - 1) * sizeof(wchar_t), std::ios::cur);
+                source.object.seekp((offset - 1) * sizeof(char), std::ios::cur);
                 return source.object.get();
             }
         }
-        wchar_t Context::lookNextChar(size_t offset)
+        char Context::lookNextchar(size_t offset)
         {
             if (offset == 1)
             {
@@ -27,26 +27,26 @@ namespace flaner
             }
             else
             {
-                source.object.seekp((offset - 1) * sizeof(wchar_t), std::ios::cur);
-                wchar_t ch = source.object.get();
-                source.object.seekp(-static_cast<int>(offset * sizeof(wchar_t)), std::ios::cur);
+                source.object.seekp((offset - 1) * sizeof(char), std::ios::cur);
+                char ch = source.object.get();
+                source.object.seekp(-static_cast<int>(offset * sizeof(char)), std::ios::cur);
                 return ch;
             }
         }
-        wchar_t Context::getLastChar()
+        char Context::getLastchar()
         {
             source.object.unget();
-            return getNextChar(1);
+            return getNextchar(1);
         }
-        wchar_t Context::lookLastChar()
+        char Context::lookLastchar()
         {
-            wchar_t ch = getLastChar();
-            getNextChar(1);
+            char ch = getLastchar();
+            getNextchar(1);
             return ch;
         }
         bool Context::isEnd()
         {
-            return lookNextChar(1) == WEOF;
+            return lookNextchar(1) == WEOF;
         }
     }
 }

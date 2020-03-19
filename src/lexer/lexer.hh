@@ -129,15 +129,15 @@ namespace lexer
 		struct Token
 		{
 			TokenType type;
-			std::wstring value;
-			Token(TokenType a, std::wstring b) : type(a), value(b) {}
+			std::string value;
+			Token(TokenType a, std::string b) : type(a), value(b) {}
 		};
 
 	private:
 		std::vector<Token> sequence;
 		size_t cursor;
-#define MAP(s, v) { L##s, TokenType::KEYWORD_##v },
-		std::unordered_map<std::wstring, TokenType> keywordMap
+#define MAP(s, v) { s, TokenType::KEYWORD_##v },
+		std::unordered_map<std::string, TokenType> keywordMap
 		{
 			MAP("none", NONE)
 			MAP("true", TRUE)
@@ -230,8 +230,8 @@ namespace lexer
 		};
 
 	public:
-		bool isBlank(wchar_t ch);
-		TokenType getKeywordOrID(std::wstring s);
+		bool isBlank(char ch);
+		TokenType getKeywordOrID(std::string s);
 		
 	public:
 		std::vector<Token> process();
@@ -241,20 +241,20 @@ namespace lexer
 		Token last(size_t n = 1);
 		Token now();
 		bool isEnd();
-		std::unordered_map<std::wstring, TokenType> getKeywordMap();
+		std::unordered_map<std::string, TokenType> getKeywordMap();
 		std::unordered_set<TokenType> getOperatorSet();
 
 		struct LexError
 		{
-			std::wstring info;
+			std::string info;
 			size_t line, offset;
-			LexError(std::wstring s, size_t a, size_t b)
-				: info(L"LexError: " + s),
+			LexError(std::string s, size_t a, size_t b)
+				: info("LexError: " + s),
 				line(a), offset(b)
 			{
 			}
 		};
-		void error(std::wstring info);
+		void error(std::string info);
 	};
 }
 }

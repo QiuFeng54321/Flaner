@@ -19,10 +19,10 @@ namespace lexer
 		~Context() {}
 
 	public:
-		wchar_t getNextChar(size_t offset);
-		wchar_t lookNextChar(size_t offset);
-		wchar_t getLastChar();
-		wchar_t lookLastChar();
+		char getNextchar(size_t offset);
+		char lookNextchar(size_t offset);
+		char getLastchar();
+		char lookLastchar();
 		bool isEnd();
 
 	public:

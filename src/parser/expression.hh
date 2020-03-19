@@ -24,8 +24,13 @@ namespace syntax
 	public:
 		Expression() {}
 		virtual ~Expression() {}
-		virtual std::wstring stringify() = delete;
 
+		json getTree()
+		{
+			return tree;
+		}
+
+	private:
 		json tree;
 	};
 
@@ -50,27 +55,27 @@ namespace syntax
 			case lexer::Lexer::TokenType::KEYWORD_TRUE:
 			case lexer::Lexer::TokenType::KEYWORD_FALSE:
 				kind = boolean;
-				kind_description = L"boolean";
+				kind_description = "boolean";
 				break;
 			case lexer::Lexer::TokenType::NUMBER:
 				kind = number;
-				kind_description = L"number";
+				kind_description = "number";
 				break;
 			case lexer::Lexer::TokenType::STRING:
 				kind = string;
-				kind_description = L"string";
+				kind_description = "string";
 				break;
 			case lexer::Lexer::TokenType::KEYWORD_NONE:
 				kind = none;
-				kind_description = L"none";
+				kind_description = "none";
 				break;
 			case lexer::Lexer::TokenType::BIGINT:
 				kind = bigint;
-				kind_description = L"bigint";
+				kind_description = "bigint";
 				break;
 			case lexer::Lexer::TokenType::RATIONAL:
 				kind = rational;
-				kind_description = L"rational";
+				kind_description = "rational";
 				break;
 			default:
 				// TODO...
@@ -83,9 +88,17 @@ namespace syntax
 				{ "value", value },
 			};
 		}
-		std::wstring value;
+		std::string value;
 		LiteralKind kind;
-		std::wstring kind_description;
+		std::string kind_description;
+
+		json getTree()
+		{
+			return tree;
+		}
+
+	private:
+		json tree;
 	};
 
 
@@ -130,7 +143,7 @@ namespace syntax
 		{
 
 		}
-		std::wstring value;
+		std::string value;
 	};
 
 	class Boolean : public PrimaryNode
@@ -154,12 +167,15 @@ namespace syntax
 		void push(std::shared_ptr<Expression> expr);
 		void pop();
 		std::vector<std::shared_ptr<Expression>> members;
+
+	private:
+		json tree;
 	};
 
 	class IDNode : public Expression
 	{
 	public:
-		IDNode(std::wstring name)
+		IDNode(std::string name)
 			: name(name)
 		{
 			tree = {
@@ -167,7 +183,10 @@ namespace syntax
 			    { "name", name },
 			};
 		}
-		std::wstring name;
+		std::string name;
+
+	private:
+		json tree;
 	};
 
 	class ObjectLiteral : public PrimaryNode
@@ -180,7 +199,10 @@ namespace syntax
 			std::shared_ptr<Expression> value;
 		};
 		std::vector<Item> members;
-		void push(std::wstring name, std::shared_ptr<Expression> expr);
+		void push(std::string name, std::shared_ptr<Expression> expr);
+
+	private:
+		json tree;
 	};
 
 	class UnaryNode : public Expression
@@ -192,6 +214,9 @@ namespace syntax
 		{}
 		Kind kind;
 		std::shared_ptr<Expression> right;
+
+	private:
+		json tree;
 	};
 
 	class BinaryNode : public Expression
@@ -206,13 +231,16 @@ namespace syntax
 			tree = {
 				{ "description", "binary-expression" },
 			    { "type", static_cast<int>(kind) },
-				{ "left", left->tree },
-			    { "right", right->tree },
+				{ "left", left->getTree() },
+			    { "right", right->getTree() },
 			};
 		}
 		Kind kind;
 		std::shared_ptr<Expression> left;
 		std::shared_ptr<Expression> right;
+
+	private:
+		json tree;
 	};
 
 	class TernaryNode : public Expression
@@ -221,6 +249,9 @@ namespace syntax
 		std::shared_ptr<Expression> condition;
 		std::shared_ptr<Expression> left;
 		std::shared_ptr<Expression> right;
+
+	private:
+		json tree;
 	};
 
 	class CallingNode : public Expression
@@ -228,6 +259,9 @@ namespace syntax
 	public:
 		std::shared_ptr<Expression> function;
 		std::vector<std::shared_ptr<Expression>> arguments;
+
+	private:
+		json tree;
 	};
 }
 }

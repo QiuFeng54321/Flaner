@@ -14,7 +14,7 @@ namespace syntax
 	{
 		members.pop_back();
 	}
-	void ObjectLiteral::push(std::wstring name, std::shared_ptr<Expression> expr)
+	void ObjectLiteral::push(std::string name, std::shared_ptr<Expression> expr)
 	{
 		members.push_back({ std::make_shared<IDNode>(name), expr });
 	}

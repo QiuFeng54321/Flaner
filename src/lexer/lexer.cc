@@ -4,9 +4,9 @@ namespace flaner
 {
 namespace lexer
 {
-    bool Lexer::isBlank(wchar_t ch)
+    bool Lexer::isBlank(char ch)
     {
-        std::wstring blanks = L"\n\r\t\f \x0b\xa0\u2000"
+        std::string blanks = "\n\r\t\f \x0b\xa0\u2000"
             "\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009"
             "\u200a\u200b\u2028\u2029\u3000";
         for (auto i = blanks.begin(); i != blanks.end(); i++)
@@ -19,7 +19,7 @@ namespace lexer
         return false;
     }
 
-    Lexer::TokenType Lexer::getKeywordOrID(std::wstring s)
+    Lexer::TokenType Lexer::getKeywordOrID(std::string s)
     {
         TokenType type;
 
@@ -36,11 +36,11 @@ namespace lexer
 
     std::vector<Lexer::Token> Lexer::process()
     {
-        auto push = [&](TokenType t, std::wstring v) {
+        auto push = [&](TokenType t, std::string v) {
             sequence.push_back({ t, v });
         };
         auto next = [&](size_t offset = 1) {
-            return context.getNextChar(offset);
+            return context.getNextchar(offset);
         };
         auto lastToken = [&]() {
             return sequence.at(sequence.size() - 1);
@@ -48,40 +48,40 @@ namespace lexer
 
         while (!context.isEnd())
         {
-            wchar_t ch = next();
+            char ch = next();
 
             if (isBlank(ch))
             {
                 continue;
             }
 
-            auto match = [&](wchar_t s) {
+            auto match = [&](char s) {
                 return ch == s;
             };
-            auto test = [&](wchar_t s, size_t offset = 1) {
-                return context.lookNextChar(offset) == s;
+            auto test = [&](char s, size_t offset = 1) {
+                return context.lookNextchar(offset) == s;
             };
 
             if (iswdigit(ch))
             {
-                std::wstring s{ ch };
-                wchar_t nextChar = context.lookNextChar(1);
-                while (iswdigit(nextChar))
+                std::string s{ ch };
+                char nextchar = context.lookNextchar(1);
+                while (iswdigit(nextchar))
                 {
                     ch = next();
-                    nextChar = context.lookNextChar(1);
+                    nextchar = context.lookNextchar(1);
                     s += ch;
                 }
                 push(TokenType::NUMBER, s);
             }      
             else if (iswalpha(ch) || ch == L'_' || ch == L'$')
             {
-                std::wstring word{ ch };
-                wchar_t nextChar = context.lookNextChar(1);
-                while (iswalnum(nextChar) || ch == L'_' || ch == L'$')
+                std::string word{ ch };
+                char nextchar = context.lookNextchar(1);
+                while (iswalnum(nextchar) || ch == L'_' || ch == L'$')
                 {
                     ch = next();
-                    nextChar = context.lookNextChar(1);
+                    nextchar = context.lookNextchar(1);
                     word += ch;
                 }
                 if (sequence.size() != 0 && sequence.back().type == TokenType::OP_DOT)
@@ -97,31 +97,31 @@ namespace lexer
             {
                 if (test('='))
                 {
-                    push(TokenType::OP_ADD_ASSIGN, L"+=");
+                    push(TokenType::OP_ADD_ASSIGN, "+=");
                     next();
                 }
                 else
                 {
-                    push(TokenType::OP_ADD, L"+");
+                    push(TokenType::OP_ADD, "+");
                 }
             }
             else if (match('-'))
             {
                 if (test('='))
                 {
-                    push(TokenType::OP_MINUS_ASSIGN, L"-=");
+                    push(TokenType::OP_MINUS_ASSIGN, "-=");
                     next();
                 }
                 else
                 {
-                    push(TokenType::OP_MINUS, L"-");
+                    push(TokenType::OP_MINUS, "-");
                 }
             }
             else if (match('*'))
             {
                 if (test('*'))
                 {
-                    push(TokenType::OP_POW, L"**");
+                    push(TokenType::OP_POW, "**");
                     next();
                 }
                 else
@@ -129,12 +129,12 @@ namespace lexer
                     if (test('='))
                     {
 
-                        push(TokenType::OP_MUL_ASSIGN, L"*=");
+                        push(TokenType::OP_MUL_ASSIGN, "*=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_MUL, L"*");
+                        push(TokenType::OP_MUL, "*");
                     }
                     next();
                 }
@@ -143,19 +143,19 @@ namespace lexer
             {
                 if (test('/'))
                 {
-                    push(TokenType::OP_INTDIV_ASSIGN, L"//");
+                    push(TokenType::OP_INTDIV_ASSIGN, "//");
                     next();
                 }
                 else
                 {
                     if (test('='))
                     {
-                        push(TokenType::OP_DIV_ASSIGN, L"/=");
+                        push(TokenType::OP_DIV_ASSIGN, "/=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_DIV, L"/");
+                        push(TokenType::OP_DIV, "/");
                     }
                 }
             }
@@ -163,7 +163,7 @@ namespace lexer
             {
                 if (test('%'))
                 {
-                    push(TokenType::OP_QUOTE, L"%%");
+                    push(TokenType::OP_QUOTE, "%%");
                     next();
                 }
                 else
@@ -171,12 +171,12 @@ namespace lexer
                     if (test('='))
                     {
 
-                        push(TokenType::OP_MOD_ASSIGN, L"%=");
+                        push(TokenType::OP_MOD_ASSIGN, "%=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_MOD, L"%");
+                        push(TokenType::OP_MOD, "%");
                     }
                     next();
                 }
@@ -185,19 +185,19 @@ namespace lexer
             {
                 if (test('|'))
                 {
-                    push(TokenType::OP_LOGIC_OR, L"||");
+                    push(TokenType::OP_LOGIC_OR, "||");
                     next();
                 }
                 else
                 {
                     if (test('='))
                     {
-                        push(TokenType::OP_BIT_OR_ASSIGN, L"|=");
+                        push(TokenType::OP_BIT_OR_ASSIGN, "|=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_BIT_OR, L"|");
+                        push(TokenType::OP_BIT_OR, "|");
                     }
                 }
             }
@@ -205,19 +205,19 @@ namespace lexer
             {
                 if (test('&'))
                 {
-                    push(TokenType::OP_LOGIC_AND, L"&&");
+                    push(TokenType::OP_LOGIC_AND, "&&");
                     next();
                 }
                 else
                 {
                     if (test('='))
                     {
-                        push(TokenType::OP_BIT_OR_ASSIGN, L"&=");
+                        push(TokenType::OP_BIT_OR_ASSIGN, "&=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_BIT_OR, L"&");
+                        push(TokenType::OP_BIT_OR, "&");
                     }
                 }
             }
@@ -225,19 +225,19 @@ namespace lexer
             {
                 if (test('<'))
                 {
-                    push(TokenType::OP_SHIFT_LEFT, L"<<");
+                    push(TokenType::OP_SHIFT_LEFT, "<<");
                     next();
                 }
                 else
                 {
                     if (test('='))
                     {
-                        push(TokenType::OP_LESS_EQUAL, L"<=");
+                        push(TokenType::OP_LESS_EQUAL, "<=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_LESS_THAN, L"<");
+                        push(TokenType::OP_LESS_THAN, "<");
                     }
                 }
             }
@@ -245,26 +245,26 @@ namespace lexer
             {
                 if (test('>'))
                 {
-                    push(TokenType::OP_SHIFT_RIGHT, L">>");
+                    push(TokenType::OP_SHIFT_RIGHT, ">>");
                     next();
                 }
                 else
                 {
                     if (test('='))
                     {
-                        push(TokenType::OP_GREATER_EQUAL, L">=");
+                        push(TokenType::OP_GREATER_EQUAL, ">=");
                         next();
                     }
                     else
                     {
-                        push(TokenType::OP_GREATER_THAN, L">");
+                        push(TokenType::OP_GREATER_THAN, ">");
                     }
                 }
             }
             else if (match('='))
             {
                 bool pureAssignment = true;
-                auto replace = [&](TokenType t1, TokenType t2, std::wstring s) {
+                auto replace = [&](TokenType t1, TokenType t2, std::string s) {
                     if (sequence.size() != 0 && sequence.back().type == t1)
                     {
                         sequence.pop_back();
@@ -273,70 +273,70 @@ namespace lexer
                     }
                 };
 
-                replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, L"**=");
-                replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, L"%%=");
-                replace(TokenType::OP_INTDIV, TokenType::OP_INTDIV_ASSIGN, L"//=");
-                replace(TokenType::OP_SHIFT_LEFT, TokenType::OP_SHIFT_LEFT_ASSIGN, L"<<=");
-                replace(TokenType::OP_SHIFT_RIGHT, TokenType::OP_SHIFT_RIGHT_ASSIGN, L">>=");
+                replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, "**=");
+                replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, "%%=");
+                replace(TokenType::OP_INTDIV, TokenType::OP_INTDIV_ASSIGN, "//=");
+                replace(TokenType::OP_SHIFT_LEFT, TokenType::OP_SHIFT_LEFT_ASSIGN, "<<=");
+                replace(TokenType::OP_SHIFT_RIGHT, TokenType::OP_SHIFT_RIGHT_ASSIGN, ">>=");
 
                 if (pureAssignment)
                 {
-                    push(TokenType::OP_ASSIGN, L"=");
+                    push(TokenType::OP_ASSIGN, "=");
                 }
 
             }
             else if (match('('))
             {
-                push(TokenType::OP_PAREN_BEGIN, L"(");
+                push(TokenType::OP_PAREN_BEGIN, "(");
             }
             else if (match(')'))
             {
-                push(TokenType::OP_PAREN_END, L")");
+                push(TokenType::OP_PAREN_END, ")");
             }
             else if (match('['))
             {
-                push(TokenType::OP_BRACKET_BEGIN, L"[");
+                push(TokenType::OP_BRACKET_BEGIN, "[");
             }
             else if (match(']'))
             {
-                push(TokenType::OP_BRACKET_END, L"]");
+                push(TokenType::OP_BRACKET_END, "]");
             }
             else if (match('{'))
             {
-                push(TokenType::OP_BRACE_BEGIN, L"{");
+                push(TokenType::OP_BRACE_BEGIN, "{");
             }
             else if (match('}'))
             {
-                push(TokenType::OP_BRACE_END, L"}");
+                push(TokenType::OP_BRACE_END, "}");
             }
             else if (match('.'))
             {
                 if (sequence.size() != 0 && sequence.back().type == TokenType::OP_DOT_DOT)
                 {
                     sequence.pop_back();
-                    push(TokenType::OP_DOT_DOT_DOT, L"...");
+                    push(TokenType::OP_DOT_DOT_DOT, "...");
                 }
                 else if (test('.'))
                 {
-                    push(TokenType::OP_DOT_DOT, L"..");
+                    push(TokenType::OP_DOT_DOT, "..");
                     next();
                 }
                 else
                 {
-                    push(TokenType::OP_DOT, L".");
+                    push(TokenType::OP_DOT, ".");
                 }
             }
             else if (match(':'))
             {
-                push(TokenType::OP_COLON, L":");
+                push(TokenType::OP_COLON, ":");
             }
             else if (match('?'))
             {
-                push(TokenType::OP_QUESTION, L"?");
+                push(TokenType::OP_QUESTION, "?");
             }
 			else if (match(';'))
 			{
-				push(TokenType::OP_SEMICOLON, L";");
+				push(TokenType::OP_SEMICOLON, ";");
 			}
             else
             {
@@ -357,7 +357,7 @@ namespace lexer
 		size_t offset = cursor + n;
 		if (offset >= sequence.size())
 		{
-			return { TokenType::END_OF_FILE, { WEOF } };
+			return { TokenType::END_OF_FILE, { EOF } };
 		}
 		return sequence.at(offset);
 	}
@@ -387,7 +387,7 @@ namespace lexer
 	{
 		return cursor >= sequence.size();
 	}
-	std::unordered_map<std::wstring, Lexer::TokenType> Lexer::getKeywordMap()
+	std::unordered_map<std::string, Lexer::TokenType> Lexer::getKeywordMap()
 	{
 		return keywordMap;
 	}
@@ -395,9 +395,9 @@ namespace lexer
 	{
 		return operatorSet;
 	}
-    void Lexer::error(std::wstring info)
+    void Lexer::error(std::string info)
     {
-        throw LexError{ L"SyntaxError: " + info, context.lineOffset, context.charOffset };
+        throw LexError{ "SyntaxError: " + info, context.lineOffset, context.charOffset };
     }
 }
 }

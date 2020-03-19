@@ -82,12 +82,12 @@ namespace parser
 	public:
 		struct SyntaxError
 		{
-			std::wstring info;
+			std::string info;
 			size_t line, offset;
 			SyntaxError(){}
-			SyntaxError(std::wstring s)
+			SyntaxError(std::string s)
 			{
-				info = L"SyntaxError: " + s;
+				info = "SyntaxError: " + s;
 			}
 		};
 
@@ -95,7 +95,7 @@ namespace parser
 		{
 			UnexpectedToken_SyntaxError(Token token)
 			{
-				info = L"SyntaxError: Unexpected token `" + token.value + L"`";
+				info = "SyntaxError: Unexpected token `" + token.value + "`";
 			}
 		};
 
