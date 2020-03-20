@@ -7,28 +7,28 @@ namespace flaner
 {
 namespace lexer
 {
-	class Context
-	{
-	public:
-		Context(std::string path)
-			: source(path),
-			lineOffset(0), charOffset(0)
-		{
+    class Context
+    {
+    public:
+        Context(std::string path)
+            : source(path),
+            lineOffset(0), charOffset(0)
+        {
 
-		}
-		~Context() {}
+        }
+        ~Context() {}
 
-	public:
-		char getNextchar(size_t offset);
-		char lookNextchar(size_t offset);
-		char getLastchar();
-		char lookLastchar();
-		bool isEnd();
+    public:
+        char getNextchar(size_t offset);
+        char lookNextchar(size_t offset);
+        char getLastchar();
+        char lookLastchar();
+        bool isEnd();
 
-	public:
-		io::Source source;
-		size_t lineOffset, charOffset;
-	};
+    public:
+        io::Source source;
+        size_t lineOffset, charOffset;
+    };
 }
 }
 

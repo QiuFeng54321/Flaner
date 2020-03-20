@@ -18,7 +18,7 @@ namespace syntax
     {
         return sequence.front();
     }
-	std::shared_ptr<Statement> StatementSequence::next()
+    std::shared_ptr<Statement> StatementSequence::next()
     {
         offset += 1;
         return sequence.at(offset - 1);

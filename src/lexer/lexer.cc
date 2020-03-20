@@ -334,10 +334,10 @@ namespace lexer
             {
                 push(TokenType::OP_QUESTION, "?");
             }
-			else if (match(';'))
-			{
-				push(TokenType::OP_SEMICOLON, ";");
-			}
+            else if (match(';'))
+            {
+                push(TokenType::OP_SEMICOLON, ";");
+            }
             else
             {
                 if (ch == WEOF)
@@ -350,51 +350,51 @@ namespace lexer
                 }
             }
         }
-		return sequence;
+        return sequence;
     }
-	Lexer::Token Lexer::forwards(size_t n)
-	{
-		size_t offset = cursor + n;
-		if (offset >= sequence.size())
-		{
-			return { TokenType::END_OF_FILE, { EOF } };
-		}
-		return sequence.at(offset);
-	}
-	Lexer::Token Lexer::backwards(size_t n)
-	{
-		if (n >= cursor)
-		{
-			// TODO...
-		}
-		return sequence.at(cursor - n);
-	}
-	Lexer::Token Lexer::next(size_t n)
-	{
-		cursor += n;
-		return forwards(0);
-	}
-	Lexer::Token Lexer::last(size_t n)
-	{
-		cursor -= n;
-		return backwards(0);
-	}
-	Lexer::Token Lexer::now()
-	{
-		return sequence.at(cursor);
-	}
-	bool Lexer::isEnd()
-	{
-		return cursor >= sequence.size();
-	}
-	std::unordered_map<std::string, Lexer::TokenType> Lexer::getKeywordMap()
-	{
-		return keywordMap;
-	}
-	std::unordered_set<Lexer::TokenType> Lexer::getOperatorSet()
-	{
-		return operatorSet;
-	}
+    Lexer::Token Lexer::forwards(size_t n)
+    {
+        size_t offset = cursor + n;
+        if (offset >= sequence.size())
+        {
+            return { TokenType::END_OF_FILE, { EOF } };
+        }
+        return sequence.at(offset);
+    }
+    Lexer::Token Lexer::backwards(size_t n)
+    {
+        if (n >= cursor)
+        {
+            // TODO...
+        }
+        return sequence.at(cursor - n);
+    }
+    Lexer::Token Lexer::next(size_t n)
+    {
+        cursor += n;
+        return forwards(0);
+    }
+    Lexer::Token Lexer::last(size_t n)
+    {
+        cursor -= n;
+        return backwards(0);
+    }
+    Lexer::Token Lexer::now()
+    {
+        return sequence.at(cursor);
+    }
+    bool Lexer::isEnd()
+    {
+        return cursor >= sequence.size();
+    }
+    std::unordered_map<std::string, Lexer::TokenType> Lexer::getKeywordMap()
+    {
+        return keywordMap;
+    }
+    std::unordered_set<Lexer::TokenType> Lexer::getOperatorSet()
+    {
+        return operatorSet;
+    }
     void Lexer::error(std::string info)
     {
         throw LexError{ "SyntaxError: " + info, context.lineOffset, context.charOffset };
