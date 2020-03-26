@@ -113,9 +113,10 @@ namespace syntax
     public:
         Numeric(Token source)
         {
-            // TODO...
+			// TODO...
+			value = std::atof(source.value.c_str());
         }
-        std::variant<int64_t, double> value;
+        double value;
     };
 
     class BigInt : public PrimaryNode
