@@ -1,0 +1,70 @@
+identifier ::=
+    [A-Za-z$_][A-Za-z$_0-9]
+literal ::=
+    none-literal | boolean-literal | string-literal
+            | numric-literal | bigint-literal | rational-literal
+none-literal ::=
+    'none'
+boolean-literal ::=
+    'true' | 'false'
+
+string-literal ::=
+    ( escape-string-literal | noescape-string-literal ) ( string-literal | "" )
+escape-string-literal ::=
+    "([^\\]|(\\([abfnrtveZ0'"?\\/]|(x[0-9A-Fa-f]{2})|(u[0-9A-Fa-f]{4})|(U[0-9A-Fa-f]{6}))))*?"
+noescape-string-literal ::=
+    '[^']*?'
+    
+
+    
+numeric-literal ::=
+    number-sign (
+            non-decimal-literal binary-exponent-suffix
+                    | decimal-exponent-suffix decimal-exponent-suffix ) 
+number-sign ::=
+    [+-]?)
+    
+non-decimal-literal ::=
+    binary-literal | octal-literal | hexadecimal-literal
+    
+binary-literal ::=
+    binary-integer-literal (\.([01]'?)+)
+    
+binary-integer-literal ::=
+    0[bB]([01]'?)+
+    
+octal-literal ::=
+    octal-integer-literal (\.([0-7]'?)+)
+    
+octal-integer-literal ::=
+    0[oO]([0-7]'?)+
+    
+decimal-literal ::=
+    decimal-integer-literal (\.([0-9]'?)+)
+    
+decimal-integer-literal ::=
+    ([0-9]'?)+
+    
+hexadecimal-literal ::=
+    hexadecimal-integer-literal (\.([0-9A-Fa-f]'?)+)
+
+hexadecimal-integer-literal ::=
+    0[xX]([0-9A-Fa-f]'?)+
+    
+exponent-suffix ::=
+    ( decimal-exponent-suffix | binary-exponent-suffix ) | ""
+    
+decimal-exponent-suffix ::=
+    [eE][-+]?([0-9]'?)+
+    
+binary-exponent-suffix ::=
+    [pP][-+]?([0-9]'?)+
+    
+bigint-literal ::=
+    integer-literal [nN]
+    
+rational-literal ::=
+    integer-literal "r" integer-literal
+    
+integer-literal ::=
+    binary-integer-literal | octal-integer-literal | decimal-integer-literal | hexadecimal-integer-literal
