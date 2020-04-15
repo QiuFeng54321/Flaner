@@ -1,3 +1,5 @@
+# Lexicology
+
 identifier ::=
     [A-Za-z$_][A-Za-z$_0-9]
 literal ::=
@@ -14,8 +16,6 @@ escape-string-literal ::=
     "([^\\]|(\\([abfnrtveZ0'"?\\/]|(x[0-9A-Fa-f]{2})|(u[0-9A-Fa-f]{4})|(U[0-9A-Fa-f]{6}))))*?"
 noescape-string-literal ::=
     '[^']*?'
-    
-
     
 numeric-literal ::=
     number-sign (
@@ -68,3 +68,91 @@ rational-literal ::=
     
 integer-literal ::=
     binary-integer-literal | octal-integer-literal | decimal-integer-literal | hexadecimal-integer-literal
+
+# Syntax
+
+program ::=
+    statement-sequence-opt
+	
+statement-sequence-opt ::=
+	statement-sequence | ""
+	
+statement-sequence ::=
+	statement statement-sequence-opt
+	
+statement ::=
+	block | nonblock-statement
+	
+block ::=
+	"{" statement-sequence-opt "}"
+	
+nonblock-statement ::=
+	null-statement |
+	expression-statement # TODO...
+
+null-statement ::=
+	";"
+	
+expression-statement ::=
+	expression ";"
+	
+
+
+expression ::=
+	infix-head infix-carriage-sequence-opt
+	
+infix-head ::=
+	infix-element
+	
+infix-element ::=
+	prefix-operator-sequence-opt primary-expression postfix-operator-sequence-opt
+	
+prefix-operator-sequence-opt ::=
+	prefix-operator-sequence | ""
+	
+prefix-operator-sequence ::=
+	prefix-operator prefix-operator-sequence-opt
+	
+prefix-operator ::=
+	"-" | "~" | "!"     # TODO...
+	
+primary-expression ::=
+	identifier | literal     # TODO...
+	
+postfix-operator-sequence-opt ::=
+	postfix-operator-sequence | ""
+	
+postfix-operator ::=
+	""                # TODO...
+	
+	# TODO...
+	
+infix-carriage-sequence-opt ::=
+	infix-carriage-sequence | ""
+	
+infix-carriage-sequence ::=
+	infix-carriage infix-carriage-sequence-opt
+	
+infix-carriage ::=
+	infix-operator infix-element
+	
+infix-operator ::=
+	infix-operator-ternary | infix-operator-logical-an |
+	infix-operator-logical-or | infix-operator-general
+
+infix-operator-ternary ::=
+	( "?" | "?=" ) expression ":"
+
+infix-operator-logical-and ::=
+	"&&" | "&&=" | "and"
+
+infix-operator-logical-or ::=
+	"||" | "||=" | "or"
+
+infix-operator-general ::=
+	"+"  | "-"  | "*"  | "/"  | "%"  | "**" | "//" | "%%" |
+	"<<"  | ">>"  | "<<<"  | ">>>"  | "&"  | "|"  | "^"  |
+	"+=" | "-=" | "*=" | "/=" | "%=" | "<<=" | ">>=" | "<<<=" | ">>>=" | "&=" | "|=" | "^=" |
+	"="  | "==" | "!=" | "<"  | ">"  | "<="  | ">="  | "<=>"
+
+

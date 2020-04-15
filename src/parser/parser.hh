@@ -2,6 +2,7 @@
 #define _FLANER_PARSER_PARSER_HH_
 
 #include <lexer/lexer.hh>
+#include <parser/infixElement.hh>
 #include <parser/statement.hh>
 #include <stack>
 

@@ -5,7 +5,9 @@ int main(int argc, char* argv[])
     using namespace flaner::lexer;
     using namespace flaner::parser;
 
-    Parser parser(R"(D:\hello.fln)");
+	Lexer lexer(R"(D:\hello.fln)");
+
+    //Parser parser(R"(D:\hello.fln)");
    // parser.parseExpressionStatement();
 
     //auto program = parser.getProgram();
@@ -14,7 +16,13 @@ int main(int argc, char* argv[])
 
     try
     {
-        std::cout << "Abstract Syntax Tree:\n";
+		auto tokens = lexer.process();
+		for (auto i : tokens)
+		{
+			std::cout << "[type: " << static_cast<int>(i.type) << ", value: " << i.value << "]\n";
+		}
+
+
 		
     }
     catch (const Lexer::LexError& e)

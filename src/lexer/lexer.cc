@@ -37,7 +37,15 @@ namespace lexer
     std::vector<Lexer::Token> Lexer::process()
     {
         auto push = [&](TokenType t, std::string v) {
-            sequence.push_back({ t, v });
+			try
+			{
+				sequence.push_back({ t, v });
+			}
+			catch (const std::exception& e)
+			{
+				std::cout << e.what() << std::endl;
+				abort();
+			}
         };
         auto next = [&](size_t offset = 1) {
             return context.getNextchar(offset);

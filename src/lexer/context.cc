@@ -46,7 +46,7 @@ namespace flaner
         }
         bool Context::isEnd()
         {
-            return lookNextchar(1) == WEOF;
+            return lookNextchar(1) == EOF;
         }
     }
 }
