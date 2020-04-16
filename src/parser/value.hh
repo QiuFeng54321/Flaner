@@ -106,6 +106,8 @@ namespace parser
 			return *this;
 		}
 
+	public:
+		
 	};
 }
 }
