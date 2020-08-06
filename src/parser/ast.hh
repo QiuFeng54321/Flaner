@@ -4,7 +4,7 @@
 #include <vector>
 #include <variant>
 #include <map>
-#include <lexer/token.hh>
+#include <lexer/lexer.hh>
 
 namespace flaner
 {

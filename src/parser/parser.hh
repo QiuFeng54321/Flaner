@@ -4,14 +4,17 @@
 #include <string>
 #include <map>
 #include <parser/ast.hh>
+#include <parser/error.hh>
 
 namespace flaner
 {
 namespace parser
 {
+	using Token = lexer::Lexer::Token;
+
 	enum class Priority : uint16_t
 	{
-		comma,
+		comma = 1,
 		spread,
 		yield,
 		assignment,
@@ -32,6 +35,9 @@ namespace parser
 	};
 
 	Priority getOperatorPrecedence(Operator op);
+	Priority getOperatorPrecedence(Token token);
+
+	bool isOperatorToken(Token token);
 
 }
 }
