@@ -6,8 +6,6 @@
 #include <vector>
 #include <map>
 #include <variant>
-#include <deps/json.hpp>
-#include <deps/enum.h>
 
 namespace flaner
 {
@@ -17,21 +15,12 @@ namespace syntax
 {
     using Kind = lexer::Lexer::TokenType;
     using Token = lexer::Lexer::Token;
-    using json = nlohmann::json;
 
     class Expression
     {
     public:
         Expression() {}
         virtual ~Expression() {}
-
-        json getTree()
-        {
-            return tree;
-        }
-
-    private:
-        json tree;
     };
 
     class BaseLiteralNode : public Expression
@@ -82,23 +71,10 @@ namespace syntax
                 break;
             }
 
-            tree = {
-                { "description", "base-literal" },
-                { "type", kind_description },
-                { "value", value },
-            };
         }
         std::string value;
         LiteralKind kind;
         std::string kind_description;
-
-        json getTree()
-        {
-            return tree;
-        }
-
-    private:
-        json tree;
     };
 
 
@@ -168,9 +144,6 @@ namespace syntax
         void push(std::shared_ptr<Expression> expr);
         void pop();
         std::vector<std::shared_ptr<Expression>> members;
-
-    private:
-        json tree;
     };
 
     class IDNode : public Expression
@@ -179,15 +152,9 @@ namespace syntax
         IDNode(std::string name)
             : name(name)
         {
-            tree = {
-                { "description", "identifier" },
-                { "name", name },
-            };
+
         }
         std::string name;
-
-    private:
-        json tree;
     };
 
     class ObjectLiteral : public PrimaryNode
@@ -201,9 +168,6 @@ namespace syntax
         };
         std::vector<Item> members;
         void push(std::string name, std::shared_ptr<Expression> expr);
-
-    private:
-        json tree;
     };
 
     class UnaryNode : public Expression
@@ -215,9 +179,6 @@ namespace syntax
         {}
         Kind kind;
         std::shared_ptr<Expression> right;
-
-    private:
-        json tree;
     };
 
     class BinaryNode : public Expression
@@ -229,19 +190,11 @@ namespace syntax
             right(val2)
         {
 
-            tree = {
-                { "description", "binary-expression" },
-                { "type", static_cast<int>(kind) },
-                { "left", left->getTree() },
-                { "right", right->getTree() },
-            };
+           
         }
         Kind kind;
         std::shared_ptr<Expression> left;
         std::shared_ptr<Expression> right;
-
-    private:
-        json tree;
     };
 
     class TernaryNode : public Expression
@@ -250,9 +203,6 @@ namespace syntax
         std::shared_ptr<Expression> condition;
         std::shared_ptr<Expression> left;
         std::shared_ptr<Expression> right;
-
-    private:
-        json tree;
     };
 
     class CallingNode : public Expression
@@ -260,9 +210,6 @@ namespace syntax
     public:
         std::shared_ptr<Expression> function;
         std::vector<std::shared_ptr<Expression>> arguments;
-
-    private:
-        json tree;
     };
 }
 }

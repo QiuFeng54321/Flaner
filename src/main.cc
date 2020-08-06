@@ -7,11 +7,6 @@ int main(int argc, char* argv[])
 
 	Lexer lexer(R"(D:\hello.fln)");
 
-    //Parser parser(R"(D:\hello.fln)");
-   // parser.parseExpressionStatement();
-
-    //auto program = parser.getProgram();
-
     std::cout << "\nFlaner Programming Language.\n--------\n\n";
 
     try
