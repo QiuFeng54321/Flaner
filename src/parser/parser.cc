@@ -44,5 +44,54 @@ namespace parser
 
 		return getOperatorPrecedence(token.type);
 	}
+
+	std::shared_ptr<ExprAST> Parser::expression()
+	{
+
+	}
+
+	std::shared_ptr<ExprAST> Parser::identifier()
+	{
+		std::string idName = lexer.now();
+
+		if (lexer.go().value != "(")
+		{
+			return std::make_shared<VariableExprAST(idName)>();
+		}
+
+		auto cur = lexer.go();
+
+		std::vector<std::make_shared<ExprAST>> args{};
+
+		if (cur.value != ")")
+		{
+			while (true)
+			{
+				std::shared_ptr<ExprAST> arg = expression();
+				if (!arg)
+				{
+					return 0;
+				}
+				args.push_back(arg);
+
+				if (cur.value != ")")
+				{
+					break;
+				}
+
+				if (cur.value != ",")
+				{
+					// TODO...
+				}
+
+				cur = lexer.go();
+			}
+		}
+
+		lexer.go();
+
+		return std::make_shared<CallExprAST>{ idName, args };
+	}
+
 }
 }

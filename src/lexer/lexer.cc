@@ -377,7 +377,7 @@ namespace lexer
         }
         return sequence.at(cursor - n);
     }
-    Lexer::Token Lexer::next(size_t n)
+    Lexer::Token Lexer::go(size_t n)
     {
         cursor += n;
         return forwards(0);

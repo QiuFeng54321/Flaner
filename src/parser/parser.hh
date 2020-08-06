@@ -39,6 +39,20 @@ namespace parser
 
 	bool isOperatorToken(Token token);
 
+	class Parser
+	{
+		lexer::Lexer lexer;
+
+	public:
+		std::shared_ptr<ExprAST> expression();
+		std::shared_ptr<ExprAST> identifier();
+		std::shared_ptr<ExprAST> number();
+		std::shared_ptr<ExprAST> paren();
+		std::shared_ptr<ExprAST> primary();
+		std::shared_ptr<ExprAST> binaryOperatorRightSide();
+		std::shared_ptr<ExprAST> defintion();
+	};
+
 }
 }
 
