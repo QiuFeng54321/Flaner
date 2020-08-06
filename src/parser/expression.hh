@@ -77,7 +77,6 @@ namespace syntax
         std::string kind_description;
     };
 
-
     class PrimaryNode : public Expression
     {
     public:

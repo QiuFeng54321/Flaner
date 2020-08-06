@@ -4,6 +4,7 @@
 #include <lexer/lexer.hh>
 #include <parser/infixElement.hh>
 #include <parser/statement.hh>
+#include <parser/ast.hh>
 #include <stack>
 
 namespace flaner
