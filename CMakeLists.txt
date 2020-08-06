@@ -3,7 +3,7 @@ project (flaner)
 
 aux_source_directory (src MAIN)
 aux_source_directory (src/lexer LEXER)
-set (PARSER src/parser/syntax.cc src/parser/ast.cc)
+set (PARSER src/parser/ast.cc)
 aux_source_directory (src/runtimes RUNTIME)
 
 add_executable (flaner ${MAIN} ${LEXER} ${PARSER} ${RUNTIME})

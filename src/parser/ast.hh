@@ -35,7 +35,7 @@ namespace parser
 	class BinaryExprAST : public ExprAST
 	{
 		Operator op;
-		ExprAST* lhs, *rhs;
+		std::shared_ptr<ExprAST> lhs, rhs;
 	public:
 		BinaryExprAST(Operator op, ExprAST* lhs, ExprAST* rhs)
 			: op(op), lhs(lhs), rhs(rhs) {}
