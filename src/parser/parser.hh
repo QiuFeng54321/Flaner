@@ -50,7 +50,7 @@ namespace parser
 		std::shared_ptr<ExprAST> number();
 		std::shared_ptr<ExprAST> paren();
 		std::shared_ptr<ExprAST> primary();
-		std::shared_ptr<ExprAST> binaryOperatorRightSide();
+		std::shared_ptr<ExprAST> binaryOperatorRightSide(Priority exprPrec, std::shared_ptr<ExprAST> lhs);
 		std::shared_ptr<ExprAST> defintion();
 	};
 

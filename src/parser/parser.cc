@@ -1,6 +1,7 @@
 #include "parser.hh"
 #include "parser.hh"
 #include "parser.hh"
+#include "parser.hh"
 #include <parser/parser.hh>
 
 namespace flaner
@@ -136,5 +137,39 @@ namespace parser
 		}
 	}
 
+	std::shared_ptr<ExprAST> Parser::binaryOperatorRightSide(Priority exprPrec, std::shared_ptr<ExprAST> lhs)
+	{
+		while (true)
+		{
+			Priority prec = getOperatorPrecedence();
+
+			if (prec < exprPrec)
+			{
+				return lhs;
+			}
+
+			auto op = lexer.now();
+			lexer.go();
+
+			auto rhs = primary();
+
+			if (!rhs)
+			{
+				return nullptr;
+			}
+		}
+		
+		Priority nextPrec = getOperatorPrecedence(lexer.now());
+
+		if (prec < nextPrec)
+		{
+			rhs = binaryOperatorRightSide(prec + 1, rhs);
+			if (!rhs)
+			{
+				return nullptr;
+			}
+
+			lhs = std::make_shared<BinaryExprAST>(op, lhs, rhs);
+		}
 }
 }
