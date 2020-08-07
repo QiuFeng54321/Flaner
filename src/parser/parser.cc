@@ -1,3 +1,6 @@
+#include "parser.hh"
+#include "parser.hh"
+#include "parser.hh"
 #include <parser/parser.hh>
 
 namespace flaner
@@ -91,6 +94,46 @@ namespace parser
 		lexer.go();
 
 		return std::make_shared<CallExprAST>{ idName, args };
+	}
+
+	std::shared_ptr<ExprAST> Parser::number()
+	{
+		std::shared_ptr<ExprAST> result = std::make_shared<NumberExprAST>();
+		lexer.go();
+		return result;
+	}
+
+	std::shared_ptr<ExprAST> Parser::paren()
+	{
+		lexer.go();
+		auto v = expression();
+		if (!v)
+		{
+			return nullptr;
+		}
+		if (lexer.now().value != ")")
+		{
+			// TODO...
+		}
+		lexer.go();
+		return v;
+	}
+
+	std::shared_ptr<ExprAST> Parser::primary()
+	{
+		auto cur = lexer.now();
+		switch (cur.type)
+		{
+		case Type::IDENTIFIER:
+			return identifier();
+		case Type::NUMBER:
+			return number();
+		case Type::OP_PAREN_BEGIN:
+			return paren();
+		default:
+			// TODO...
+			return nullptr;
+		}
 	}
 
 }

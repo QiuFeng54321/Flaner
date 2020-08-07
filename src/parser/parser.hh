@@ -11,6 +11,7 @@ namespace flaner
 namespace parser
 {
 	using Token = lexer::Lexer::Token;
+	using Type = lexer::Lexer::TokenType;
 
 	enum class Priority : uint16_t
 	{
