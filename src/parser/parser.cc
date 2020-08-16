@@ -49,6 +49,12 @@ namespace parser
 		return getOperatorPrecedence(token.type);
 	}
 
+	bool isOperatorToken(Token token)
+	{
+		return token.type >= Type::OP_ADD && token.type <= Type::OP_ASSIGN
+			|| token.type == Type::OP_PAREN_BEGIN || token.type == Type::OP_PAREN_END;
+	}
+
 	std::shared_ptr<ExprAST> Parser::expression()
 	{
 		auto lhs = primary();
@@ -105,7 +111,10 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::number()
 	{
-		std::shared_ptr<ExprAST> result = std::make_shared<NumberExprAST>();
+		auto val = lexer.now().value;
+		
+		// TODO...
+		std::shared_ptr<NumberExprAST> result = std::make_shared<NumberExprAST>(std::atoi(val.c_str()));
 		lexer.go();
 		return result;
 	}
@@ -116,7 +125,8 @@ namespace parser
 		if (lexer.tryFindingAfter(Type::IDENTIFIER | Type::OP_COMMA, Type::OP_PAREN_END, Type::FUNCTION_ARROW))
 		{
 			lexer.last();
-			return std::make_shared<ExprAST>(function());
+			return nullptr;
+			//return std::make_shared<ExprAST>(function());
 		}
 		else
 		{

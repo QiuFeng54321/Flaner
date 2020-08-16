@@ -37,16 +37,16 @@ namespace parser
 		Operator op;
 		std::shared_ptr<ExprAST> lhs, rhs;
 	public:
-		BinaryExprAST(Operator op, ExprAST* lhs, ExprAST* rhs)
+		BinaryExprAST(Operator op, std::shared_ptr<ExprAST> lhs, std::shared_ptr<ExprAST> rhs)
 			: op(op), lhs(lhs), rhs(rhs) {}
 	};
 
 	class CallExprAST : public ExprAST
 	{
 		std::string callee;
-		std::vector<ExprAST*> arguments;
+		std::vector<std::shared_ptr<ExprAST>> arguments;
 	public:
-		CallExprAST(const std::string& s, std::vector<ExprAST*>& args)
+		CallExprAST(const std::string& s, std::vector<std::shared_ptr<ExprAST>>& args)
 			: callee(s), arguments(args) {}
 	};
 
