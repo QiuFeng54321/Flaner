@@ -58,7 +58,7 @@ namespace parser
 			: params(params) {}
 	};
 
-	class FunctionExprAST
+	class FunctionExprAST : public ExprAST
 	{
 		std::shared_ptr<FunctionDefAST> def;
 		std::shared_ptr<ExprAST> body;

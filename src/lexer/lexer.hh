@@ -106,7 +106,7 @@ namespace lexer
 			OP_LESS_EQUAL,
 			OP_GREATER_EQUAL,
 			OP_EQUAL,
-			OP_NOT_EUQAL,
+			OP_NOT_EQUAL,
 
 			OP_ASSIGN,
 			OP_COLON,
@@ -236,7 +236,7 @@ namespace lexer
 			TokenType::OP_LESS_EQUAL,
 			TokenType::OP_GREATER_EQUAL,
 			TokenType::OP_EQUAL,
-			TokenType::OP_NOT_EUQAL,
+			TokenType::OP_NOT_EQUAL,
 
 			TokenType::OP_ASSIGN,
 			TokenType::OP_COLON,

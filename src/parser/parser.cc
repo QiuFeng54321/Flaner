@@ -34,7 +34,7 @@ namespace parser
 		}
 		catch (const std::exception&)
 		{
-			return 0;
+			return {};
 		}
 		return p;
 	}
@@ -43,7 +43,7 @@ namespace parser
 	{
 		if (!isOperatorToken(token))
 		{
-			return 0;
+			return {};
 		}
 
 		return getOperatorPrecedence(token.type);
@@ -57,21 +57,21 @@ namespace parser
 			return nullptr;
 		}
 
-		return binaryOperatorRightSide();
+		return binaryOperatorRightSide(Priority{}, lhs);
 	}
 
 	std::shared_ptr<ExprAST> Parser::identifier()
 	{
-		std::string idName = lexer.now();
+		std::string idName = lexer.now().value;
 
 		if (lexer.go() != Type::OP_PAREN_BEGIN)
 		{
-			return std::make_shared<VariableExprAST(idName)>();
+			return std::make_shared<VariableExprAST>(idName);
 		}
 
 		auto cur = lexer.go();
 
-		std::vector<std::make_shared<ExprAST>> args{};
+		std::vector<std::shared_ptr<ExprAST>> args{};
 
 		if (cur != Type::OP_PAREN_END)
 		{
@@ -100,7 +100,7 @@ namespace parser
 
 		lexer.go();
 
-		return std::make_shared<CallExprAST>{ idName, args };
+		return std::make_shared<CallExprAST>(idName, args);
 	}
 
 	std::shared_ptr<ExprAST> Parser::number()
@@ -113,17 +113,25 @@ namespace parser
 	std::shared_ptr<ExprAST> Parser::paren()
 	{
 		lexer.go();
-		auto v = expression();
-		if (!v)
+		if (lexer.tryFindingAfter(Type::IDENTIFIER | Type::OP_COMMA, Type::OP_PAREN_END, Type::FUNCTION_ARROW))
 		{
-			return nullptr;
+			lexer.last();
+			return std::make_shared<ExprAST>(function());
 		}
-		if (lexer.now() != Type::OP_PAREN_END)
+		else
 		{
-			// TODO...
+			auto v = expression();
+			if (!v)
+			{
+				return nullptr;
+			}
+			if (lexer.now() != Type::OP_PAREN_END)
+			{
+				// TODO...
+			}
+			lexer.go();
+			return v;
 		}
-		lexer.go();
-		return v;
 	}
 
 	std::shared_ptr<ExprAST> Parser::primary()
@@ -147,14 +155,14 @@ namespace parser
 	{
 		while (true)
 		{
-			Priority prec = getOperatorPrecedence();
+			auto op = lexer.now();
+			Priority prec = getOperatorPrecedence(op);
 
 			if (prec < exprPrec)
 			{
 				return lhs;
 			}
 
-			auto op = lexer.now();
 			lexer.go();
 
 			auto rhs = primary();
@@ -163,16 +171,16 @@ namespace parser
 			{
 				return nullptr;
 			}
-		}
-		
-		Priority nextPrec = getOperatorPrecedence(lexer.now());
 
-		if (prec < nextPrec)
-		{
-			rhs = binaryOperatorRightSide(prec + 1, rhs);
-			if (!rhs)
+			Priority nextPrec = getOperatorPrecedence(lexer.now());
+
+			if (prec < nextPrec)
 			{
-				return nullptr;
+				rhs = binaryOperatorRightSide(Priority{ int(prec) + 1 }, rhs);
+				if (!rhs)
+				{
+					return nullptr;
+				}
 			}
 
 			lhs = std::make_shared<BinaryExprAST>(op, lhs, rhs);
@@ -181,6 +189,65 @@ namespace parser
 
 	std::shared_ptr<FunctionDefAST> Parser::functionDef()
 	{
-		return std::shared_ptr<FunctionDefAST>();
+		bool withParen = true;
+		if (lexer.now() != Type::OP_PAREN_BEGIN)
+		{
+			withParen = false;
+			if (lexer.now() != Type::IDENTIFIER || lexer.forwards() != Type::FUNCTION_ARROW)
+			{
+				// TODO...
+				abort();
+			}
+		}
+		lexer.go();
+		std::vector<std::string> params{};
+		while (lexer.now() == Type::IDENTIFIER)
+		{
+			params.push_back(lexer.now().value);
+			if (lexer.go() == Type::OP_COMMA)
+			{
+				lexer.go();
+			}
+			if (lexer.now() != Type::IDENTIFIER)
+			{
+				if (withParen)
+				{
+					if (lexer.now() != Type::OP_PAREN_END)
+					{
+						// TODO...
+						abort();
+					}
+					if (lexer.go() != Type::FUNCTION_ARROW)
+					{
+						// TODO...
+						abort();
+					}
+				}
+				else
+				{
+					if (lexer.now() != Type::FUNCTION_ARROW)
+					{
+						// TODO...
+						abort();
+					}
+				}
+			}
+		}
+		return std::make_shared<FunctionDefAST>(params);
 	}
+	std::shared_ptr<FunctionExprAST> Parser::function()
+	{
+		auto def = functionDef();
+		if (!def)
+		{
+			return nullptr;
+		}
+		auto expr = expression();
+		if (expr)
+		{
+			return std::make_shared<FunctionExprAST>(def, expr);
+		}
+		return nullptr;
+	}
+}
 }
