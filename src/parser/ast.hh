@@ -10,7 +10,7 @@ namespace flaner
 {
 namespace parser
 {
-	using Operator = lexer::TokenType;
+	using Operator = lexer::Lexer::TokenType;
 
 	class ExprAST
 	{
@@ -48,6 +48,24 @@ namespace parser
 	public:
 		CallExprAST(const std::string& s, std::vector<ExprAST*>& args)
 			: callee(s), arguments(args) {}
+	};
+
+	class FunctionDefAST
+	{
+		std::string name;
+		std::vector<std::string> params;
+	public:
+		FunctionDefAST(std::string& name, std::vector<std::string>& params)
+			: name(name), params(params) {}
+	};
+
+	class FunctionExprAST
+	{
+		std::shared_ptr<FunctionDefAST> def;
+		std::shared_ptr<ExprAST> body;
+	public:
+		FunctionExprAST(std::shared_ptr<FunctionDefAST> def, std::shared_ptr<ExprAST> expr)
+			: def(def), body(expr) {}
 	};
 
 }

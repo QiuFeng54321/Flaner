@@ -2,6 +2,7 @@
 #include "parser.hh"
 #include "parser.hh"
 #include "parser.hh"
+#include "parser.hh"
 #include <parser/parser.hh>
 
 namespace flaner
@@ -23,7 +24,6 @@ namespace parser
 		{ Operator::OP_NOT_EQUAL, Priority::comparision },
 	};
 
-
 	Priority getOperatorPrecedence(Operator op)
 	{
 		Priority p;
@@ -38,7 +38,6 @@ namespace parser
 		return p;
 	}
 
-
 	Priority getOperatorPrecedence(lexer::Lexer::Token token)
 	{
 		if (!isOperatorToken(token))
@@ -51,14 +50,20 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::expression()
 	{
+		auto lhs = primary();
+		if (!lhs)
+		{
+			return nullptr;
+		}
 
+		return binaryOperatorRightSide();
 	}
 
 	std::shared_ptr<ExprAST> Parser::identifier()
 	{
 		std::string idName = lexer.now();
 
-		if (lexer.go().value != "(")
+		if (lexer.go() != Type::OP_PAREN_BEGIN)
 		{
 			return std::make_shared<VariableExprAST(idName)>();
 		}
@@ -67,7 +72,7 @@ namespace parser
 
 		std::vector<std::make_shared<ExprAST>> args{};
 
-		if (cur.value != ")")
+		if (cur != Type::OP_PAREN_END)
 		{
 			while (true)
 			{
@@ -78,12 +83,12 @@ namespace parser
 				}
 				args.push_back(arg);
 
-				if (cur.value != ")")
+				if (cur != Type::OP_PAREN_END)
 				{
 					break;
 				}
 
-				if (cur.value != ",")
+				if (cur != Type::OP_COMMA)
 				{
 					// TODO...
 				}
@@ -112,7 +117,7 @@ namespace parser
 		{
 			return nullptr;
 		}
-		if (lexer.now().value != ")")
+		if (lexer.now() != Type::OP_PAREN_END)
 		{
 			// TODO...
 		}
@@ -171,5 +176,6 @@ namespace parser
 
 			lhs = std::make_shared<BinaryExprAST>(op, lhs, rhs);
 		}
-}
+	}
+
 }

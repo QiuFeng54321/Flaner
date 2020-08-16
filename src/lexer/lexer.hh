@@ -131,6 +131,14 @@ namespace lexer
 			TokenType type;
 			std::string value;
 			Token(TokenType a, std::string b) : type(a), value(b) {}
+			bool operator==(TokenType t)
+			{
+				return type == t;
+			}
+			bool operator==(std::string& s)
+			{
+				return value == s;
+			}
 		};
 
 	private:
@@ -237,7 +245,7 @@ namespace lexer
 		std::vector<Token> process();
 		Token forwards(size_t n = 1);
 		Token backwards(size_t n = 1);
-		Token next(size_t n = 1);
+		Token go(size_t n = 1);
 		Token last(size_t n = 1);
 		Token now();
 		bool isEnd();
