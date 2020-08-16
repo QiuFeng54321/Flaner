@@ -52,11 +52,10 @@ namespace parser
 
 	class FunctionDefAST
 	{
-		std::string name;
 		std::vector<std::string> params;
 	public:
-		FunctionDefAST(std::string& name, std::vector<std::string>& params)
-			: name(name), params(params) {}
+		FunctionDefAST(std::vector<std::string>& params)
+			: params(params) {}
 	};
 
 	class FunctionExprAST

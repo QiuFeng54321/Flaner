@@ -4,6 +4,11 @@ namespace flaner
 {
 namespace lexer
 {
+    static inline size_t it2idx(std::vector<Lexer::Token>& seq, std::vector<Lexer::Token>::iterator& it)
+    {
+        return static_cast<size_t>(it - seq.begin());
+    }
+
     bool Lexer::isBlank(char ch)
     {
         std::string blanks = "\n\r\t\f \x0b\xa0\u2000"
@@ -362,35 +367,67 @@ namespace lexer
     }
     Lexer::Token Lexer::forwards(size_t n)
     {
-        size_t offset = cursor + n;
-        if (offset >= sequence.size())
+        auto offset = location + n;
+        if (it2idx(sequence, offset) >= sequence.size())
         {
             return { TokenType::END_OF_FILE, { EOF } };
         }
-        return sequence.at(offset);
+        return *offset;
     }
     Lexer::Token Lexer::backwards(size_t n)
     {
-        if (n >= cursor)
+        if (it2idx(sequence, location) < n)
         {
             // TODO...
         }
-        return sequence.at(cursor - n);
+        return *(location - n);
     }
     Lexer::Token Lexer::go(size_t n)
     {
-        cursor += n;
-        return forwards(0);
+        location += n;
+        return *location;
     }
     Lexer::Token Lexer::last(size_t n)
     {
-        cursor -= n;
-        return backwards(0);
+        location -= n;
+        return *location;
     }
     Lexer::Token Lexer::now()
     {
-        return sequence.at(cursor);
+        return *location;
     }
+
+    size_t Lexer::tryFindingAfter(std::unordered_set<TokenType> patterns, TokenType t1, TokenType t2)
+    {
+        for (auto i = location; i != sequence.end() && patterns.find(*i) != patterns.end(); ++i)
+        {
+            if (*i == t1)
+            {
+                if (*(++i) == t2)
+                {
+                    return std::distance(location, i);
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+        return 0;
+    }
+    
+    size_t Lexer::tryFinding(std::unordered_set<TokenType> patterns, TokenType t)
+    {
+        for (auto i = location; i != sequence.end() && patterns.find(*i) != patterns.end(); ++i)
+        {
+            if (*i == t)
+            {
+                return std::distance(location, i);
+            }
+        }
+        return 0;
+    }
+
     bool Lexer::isEnd()
     {
         return cursor >= sequence.size();

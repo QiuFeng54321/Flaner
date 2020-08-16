@@ -3,6 +3,7 @@
 #include "parser.hh"
 #include "parser.hh"
 #include "parser.hh"
+#include "parser.hh"
 #include <parser/parser.hh>
 
 namespace flaner
@@ -178,4 +179,8 @@ namespace parser
 		}
 	}
 
+	std::shared_ptr<FunctionDefAST> Parser::functionDef()
+	{
+		return std::shared_ptr<FunctionDefAST>();
+	}
 }

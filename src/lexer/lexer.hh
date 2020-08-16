@@ -124,7 +124,19 @@ namespace lexer
 			OP_BRACE_END,
 
 			OP_SEMICOLON,
+			
 		};
+
+		friend std::unordered_set<TokenType> operator|(TokenType t1, TokenType t2)
+		{
+			return std::unordered_set<TokenType> { t1, t2 };
+		}
+
+		friend std::unordered_set<TokenType> operator|(std::unordered_set<TokenType> s, TokenType t2)
+		{
+			s.insert(t2);
+			return s;
+		}
 
 		struct Token
 		{
@@ -139,11 +151,16 @@ namespace lexer
 			{
 				return value == s;
 			}
+			operator TokenType()
+			{
+				return type;
+			}
 		};
 
 	private:
 		std::vector<Token> sequence;
 		size_t cursor;
+		std::vector<Token>::iterator location;
 #define MAP(s, v) { s, TokenType::KEYWORD_##v },
 		std::unordered_map<std::string, TokenType> keywordMap
 		{
@@ -248,6 +265,17 @@ namespace lexer
 		Token go(size_t n = 1);
 		Token last(size_t n = 1);
 		Token now();
+
+		// 当接下来的 token 与模式相匹配时，
+		// 若找到 t1 且其后跟随 t2，
+		// 则返回最先找到 t2 的位置相对于当前位置的偏移量
+		size_t tryFindingAfter(std::unordered_set<TokenType> patterns, TokenType t1, TokenType t2);
+
+		// 当接下来的 token 与模式相匹配时，
+		// 若找到 t2
+		// 则返回最先找到 t2 的位置相对于当前位置的偏移量
+		size_t tryFinding(std::unordered_set<TokenType> patterns, TokenType t);
+
 		bool isEnd();
 		std::unordered_map<std::string, TokenType> getKeywordMap();
 		std::unordered_set<TokenType> getOperatorSet();
