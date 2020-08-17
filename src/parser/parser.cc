@@ -1,11 +1,9 @@
-#include "parser.hh"
-#include "parser.hh"
-#include "parser.hh"
-#include "parser.hh"
-#include "parser.hh"
-#include "parser.hh"
 #include <parser/parser.hh>
 
+void log(const char* s)
+{
+std::cerr << s << "\n";
+}
 namespace flaner
 {
 namespace parser
@@ -57,6 +55,7 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::expression()
 	{
+		log("  Parsed an expression.");
 		auto lhs = primary();
 		if (!lhs)
 		{
@@ -68,6 +67,7 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::identifier()
 	{
+		log("Parsed an identifier.");
 		std::string idName = lexer.now().value;
 
 		if (lexer.go() != Type::OP_PAREN_BEGIN)
@@ -111,6 +111,7 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::number()
 	{
+		log("Parsed a number.");
 		auto val = lexer.now().value;
 		
 		// TODO...
@@ -121,6 +122,7 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::paren()
 	{
+		log("Parsed an paren.");
 		lexer.go();
 		if (lexer.tryFindingAfter(Type::IDENTIFIER | Type::OP_COMMA, Type::OP_PAREN_END, Type::FUNCTION_ARROW))
 		{
@@ -146,6 +148,7 @@ namespace parser
 
 	std::shared_ptr<ExprAST> Parser::primary()
 	{
+		log("Parsed a primary.");
 		auto cur = lexer.now();
 		switch (cur.type)
 		{
@@ -247,6 +250,7 @@ namespace parser
 	}
 	std::shared_ptr<FunctionExprAST> Parser::function()
 	{
+		log("Parsed a function.");
 		auto def = functionDef();
 		if (!def)
 		{
@@ -258,6 +262,21 @@ namespace parser
 			return std::make_shared<FunctionExprAST>(def, expr);
 		}
 		return nullptr;
+	}
+	std::shared_ptr<FunctionExprAST> Parser::topLevel()
+	{
+		auto expr = expression();
+		if (!expr)
+		{
+			return nullptr;
+		}
+		return std::make_shared<FunctionExprAST>(
+			std::make_shared<FunctionDefAST>(std::vector<std::string>{}), expr);
+	}
+	void Parser::process()
+	{
+		// TODO...
+		topLevel();
 	}
 }
 }

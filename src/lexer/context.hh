@@ -16,6 +16,18 @@ namespace lexer
         {
 
         }
+        Context(const Context& c)
+            : source(c.source),
+            lineOffset(c.lineOffset), charOffset(c.charOffset)
+        {
+
+        }
+        Context()
+            : source(),
+            lineOffset(0), charOffset(0)
+        {
+
+        }
         ~Context() {}
 
     public:

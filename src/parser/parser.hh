@@ -6,6 +6,8 @@
 #include <parser/ast.hh>
 #include <parser/error.hh>
 
+void log(const char* s);
+
 namespace flaner
 {
 namespace parser
@@ -45,6 +47,11 @@ namespace parser
 		lexer::Lexer lexer;
 
 	public:
+		Parser(lexer::Lexer& l)
+			: lexer(l)
+		{
+			process();
+		}
 		std::shared_ptr<ExprAST> expression();
 		std::shared_ptr<ExprAST> identifier();
 		std::shared_ptr<ExprAST> number();
@@ -53,7 +60,10 @@ namespace parser
 		std::shared_ptr<ExprAST> binaryOperatorRightSide(Priority exprPrec, std::shared_ptr<ExprAST> lhs);
 		std::shared_ptr<FunctionDefAST> functionDef();
 		std::shared_ptr<FunctionExprAST> function();
+		std::shared_ptr<FunctionExprAST> topLevel();
 		std::shared_ptr<ExprAST> defintion();
+
+		void process();
 
 	};
 

@@ -16,7 +16,20 @@ namespace lexer
 		Lexer(std::string path)
 			: context(path),
 			sequence(), cursor(0)
+		{
+			process();
+		}
+
+		Lexer(const Lexer& l)
+			: context(l.context),
+			sequence(l.sequence), cursor(l.cursor)
 		{}
+
+		Lexer()
+			: context(), sequence(), cursor(0)
+		{
+			process();
+		}
 
 		~Lexer() {}
 
@@ -254,12 +267,14 @@ namespace lexer
 			TokenType::OP_BRACE_END,
 		};
 
+		void process();
+
 	public:
 		bool isBlank(char ch);
 		TokenType getKeywordOrID(std::string s);
 		
 	public:
-		std::vector<Token> process();
+		std::vector<Token> getSequence();
 		Token forwards(size_t n = 1);
 		Token backwards(size_t n = 1);
 		Token go(size_t n = 1);

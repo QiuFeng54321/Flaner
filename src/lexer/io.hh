@@ -21,6 +21,7 @@ namespace io
 
 	enum class OpenMode
 	{
+		Interactive,
 		OpenExisting,
 	};
 
@@ -34,8 +35,26 @@ namespace io
 		{
 			object.open(path, std::ios::in | std::ios::binary);
 		}
+		Source(const Source& s)
+			: path(s.path),
+			encoding(s.encoding),
+			openMode(s.openMode)
+		{
+
+		}
+		Source()
+			: path(""),
+			encoding(Encoding::UTF_8),
+			openMode(OpenMode::Interactive)
+		{
+			std::wcin.rdbuf(object.rdbuf());
+		}
 		~Source()
 		{
+			if (openMode == OpenMode::Interactive)
+			{
+				return;
+			}
 			object.close();
 		}
 	public:

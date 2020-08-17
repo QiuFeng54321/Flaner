@@ -39,7 +39,7 @@ namespace lexer
         return type;
     }
 
-    std::vector<Lexer::Token> Lexer::process()
+    void Lexer::process()
     {
         auto push = [&](TokenType t, std::string v) {
 			try
@@ -363,7 +363,10 @@ namespace lexer
                 }
             }
         }
-        return sequence;
+    }
+    std::vector<Lexer::Token> Lexer::getSequence()
+    {
+        return std::move(sequence);
     }
     Lexer::Token Lexer::forwards(size_t n)
     {
@@ -394,7 +397,7 @@ namespace lexer
     }
     Lexer::Token Lexer::now()
     {
-        return *location;
+        return sequence.at(it2idx(sequence, location));
     }
 
     size_t Lexer::tryFindingAfter(std::unordered_set<TokenType> patterns, TokenType t1, TokenType t2)
