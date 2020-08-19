@@ -1,5 +1,5 @@
 #include <lexer/lexer.hh>
-
+#include <cassert>
 namespace flaner
 {
 namespace lexer
@@ -286,6 +286,13 @@ namespace lexer
                     }
                 };
 
+                if (test('>'))
+                {
+                    push(TokenType::FUNCTION_ARROW, "=>");
+                    next();
+                    continue;
+                }
+
                 replace(TokenType::OP_POW, TokenType::OP_POW_ASSIGN, "**=");
                 replace(TokenType::OP_QUOTE, TokenType::OP_QUOTE_ASSIGN, "%%=");
                 replace(TokenType::OP_INTDIV, TokenType::OP_INTDIV_ASSIGN, "//=");
@@ -353,7 +360,7 @@ namespace lexer
             }
             else
             {
-                if (ch == WEOF)
+                if (ch == EOF)
                 {
                     push(TokenType::END_OF_FILE, { ch });
                 }
@@ -397,11 +404,13 @@ namespace lexer
     }
     Lexer::Token Lexer::now()
     {
-        return sequence.at(it2idx(sequence, location));
+        std::cout << "\nHello!";
+        assert(sequence.size());
+        return sequence.at(0);
     }
 
     size_t Lexer::tryFindingAfter(std::unordered_set<TokenType> patterns, TokenType t1, TokenType t2)
-    {
+    {                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
         for (auto i = location; i != sequence.end() && patterns.find(*i) != patterns.end(); ++i)
         {
             if (*i == t1)

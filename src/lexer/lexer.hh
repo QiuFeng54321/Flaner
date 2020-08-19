@@ -15,18 +15,21 @@ namespace lexer
 	public:
 		Lexer(std::string path)
 			: context(path),
-			sequence(), cursor(0)
+			sequence()
 		{
 			process();
+			location = sequence.begin();
 		}
 
 		Lexer(const Lexer& l)
 			: context(l.context),
-			sequence(l.sequence), cursor(l.cursor)
-		{}
+			sequence(l.sequence), location(l.location)
+		{
+			std::cout << "In Lexer(const Lexer& l)\n";
+		}
 
 		Lexer()
-			: context(), sequence(), cursor(0)
+			: context(), sequence(), location(sequence.begin())
 		{
 			process();
 		}

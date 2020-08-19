@@ -5,7 +5,7 @@ int main(int argc, char* argv[])
     using namespace flaner::lexer;
     using namespace flaner::parser;
 
-    Lexer lexer("D:\\hello.fln");
+    Lexer lexer(R"(D:\flaner\tests\samples\function.fln)");
 
     std::cout << "\nFlaner Programming Language.\n--------\n\n";
 
